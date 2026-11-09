@@ -1,0 +1,173 @@
+/* ==========================================================================
+   LOOPLOCAL DESIGN TOKENS
+   --------------------------------------------------------------------------
+   This is the ONE file to edit to change how the whole site looks.
+   Every color, font, size and spacing value used elsewhere comes from here.
+   Change a value below and every page updates.
+
+   CONTENTS
+     1. Brand palette       (the three accent colors, same in both themes)
+     2. Light theme         (default)
+     3. Dark theme          (follows the visitor's device, or the header toggle)
+     4. Typography
+     5. Spacing
+     6. Shape and depth
+     7. Layout
+
+   HOW THEMES WORK
+     The light colors live in section 2. Section 3 repeats the same names
+     with dark values. It appears twice (once for "device is set to dark",
+     once for "visitor pressed the toggle"). If you change a dark color,
+     change it in BOTH places.
+
+   CONTRAST NOTE
+     The blue, green and orange are bright. Use them as BACKGROUNDS with dark
+     text on top (--color-on-brand), never as text on a light page.
+     Text and links use --color-text and --color-link, which pass WCAG AA
+     (4.5:1). Re-check any color you change at
+     https://webaim.org/resources/contrastchecker/
+   ========================================================================== */
+
+/* 1. BRAND PALETTE + 2. LIGHT THEME (default) ------------------------------ */
+:root {
+  /* Brand palette: bright accents used as fills (buttons, bars, badges). */
+  --palette-blue:   #439de8;
+  --palette-green:  #4dd685;
+  --palette-orange: #feac5e;
+  --palette-ink:    #0f172a;  /* Dark text that sits ON the bright colors */
+  --gradient-accent: linear-gradient(90deg, var(--palette-blue), var(--palette-green), var(--palette-orange));
+
+  /* Backgrounds */
+  --color-page:          #f5f5f5;  /* Page background */
+  --color-surface:       #ffffff;  /* Cards, forms, tables */
+  --color-surface-muted: #ebedf0;  /* Subtle panels, table headers */
+  --color-header-bg:     rgba(245, 245, 245, 0.85);  /* Translucent sticky header */
+
+  /* Text */
+  --color-text:          #0b3155;  /* Body text and headings (deep navy) */
+  --color-text-muted:    #4b5563;  /* Secondary text */
+  --color-link:          #1a64a8;  /* Links (passes AA on the light page) */
+  --color-link-hover:    #0b3155;
+
+  /* Lines and focus */
+  --color-border:        #d1d5db;
+  --color-focus:         #0b5fd1;  /* Keyboard focus ring: keep high-contrast */
+
+  /* Main action color (buttons, active nav) */
+  --color-brand:         var(--palette-blue);
+  --color-brand-hover:   #2f87d0;
+  --color-brand-tint:    #e3f0fb;  /* Soft highlight: hovered rows, selected items */
+  --color-on-brand:      var(--palette-ink);
+  --color-secondary:     var(--palette-green);
+  --color-accent:        var(--palette-orange);
+
+  /* Status colors (text on a tinted background) */
+  --color-success:       #14683a;
+  --color-success-light: #dcf3e5;
+  --color-warning:       #7a4f00;
+  --color-warning-light: #fff0cc;
+  --color-danger:        #a42a2a;
+  --color-danger-light:  #fbe3e3;
+  --color-info:          #1a5a96;
+  --color-info-light:    #e0eef9;
+}
+
+/* 3. DARK THEME ------------------------------------------------------------ */
+/* (a) Device is set to dark and the visitor has not forced light. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-page:          #121212;
+    --color-surface:       #1a1a1a;
+    --color-surface-muted: #262626;
+    --color-header-bg:     rgba(18, 18, 18, 0.85);
+    --color-text:          #f5f5f5;
+    --color-text-muted:    #d1d5db;
+    --color-link:          #7cc0f5;
+    --color-link-hover:    #ffffff;
+    --color-border:        #3a3a3a;
+    --color-focus:         #feac5e;
+    --color-brand-hover:   #6bb5f0;
+    --color-brand-tint:    #1d2b3a;
+    --color-success:       #7ee2a4;
+    --color-success-light: #14301f;
+    --color-warning:       #ffd27f;
+    --color-warning-light: #33260a;
+    --color-danger:        #ff9a9a;
+    --color-danger-light:  #3a1616;
+    --color-info:          #8cc8f7;
+    --color-info-light:    #14283a;
+  }
+}
+
+/* (b) Visitor pressed the header toggle to choose dark. Keep identical to (a). */
+:root[data-theme="dark"] {
+  --color-page:          #121212;
+  --color-surface:       #1a1a1a;
+  --color-surface-muted: #262626;
+  --color-header-bg:     rgba(18, 18, 18, 0.85);
+  --color-text:          #f5f5f5;
+  --color-text-muted:    #d1d5db;
+  --color-link:          #7cc0f5;
+  --color-link-hover:    #ffffff;
+  --color-border:        #3a3a3a;
+  --color-focus:         #feac5e;
+  --color-brand-hover:   #6bb5f0;
+  --color-brand-tint:    #1d2b3a;
+  --color-success:       #7ee2a4;
+  --color-success-light: #14301f;
+  --color-warning:       #ffd27f;
+  --color-warning-light: #33260a;
+  --color-danger:        #ff9a9a;
+  --color-danger-light:  #3a1616;
+  --color-info:          #8cc8f7;
+  --color-info-light:    #14283a;
+}
+
+/* Tells the browser to draw built-in controls (scrollbars, date pickers) to match. */
+:root { color-scheme: light dark; }
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"]  { color-scheme: dark; }
+
+/* 4. TYPOGRAPHY ------------------------------------------------------------ */
+/* Fonts are self-hosted in /fonts (see fonts.css). System fonts are the fallback. */
+:root {
+  --font-body:    "Space Grotesk", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-heading: "Hammersmith One", "Trebuchet MS", system-ui, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, Consolas, monospace;
+
+  --text-sm:   0.875rem;  /* Captions, badges */
+  --text-base: 1rem;      /* Body text (16px): do not go smaller */
+  --text-lg:   1.125rem;
+  --text-xl:   1.5rem;    /* Section headings */
+  --text-2xl:  2.25rem;   /* Page titles */
+  --text-3xl:  3rem;      /* Home page hero */
+
+  --line-height-body:    1.6;
+  --line-height-heading: 1.15;
+
+  /* 5. SPACING --------------------------------------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* 6. SHAPE AND DEPTH ------------------------------------------------- */
+  /* Sharp, near-square corners give the site its crisp look. Raise these for rounder UI. */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;
+  --shadow-card:   0 1px 2px rgba(11, 49, 85, 0.10), 0 4px 12px rgba(11, 49, 85, 0.06);
+  --shadow-raised: 0 8px 24px rgba(11, 49, 85, 0.18);
+
+  /* 7. LAYOUT ---------------------------------------------------------- */
+  --content-width: 1120px;  /* Max width of page content */
+  --header-height: 64px;
+  --touch-target:  44px;    /* Minimum clickable size on touch screens (accessibility) */
+  /* Responsive breakpoints used in the CSS (variables can't be used in @media):
+       the header collapses into a menu at 1024px. Edit the number in base.css. */
+}

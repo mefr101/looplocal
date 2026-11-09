@@ -1,0 +1,26 @@
+{
+  "name": "looplocal",
+  "version": "0.1.0",
+  "description": "LoopLocal - a resource-sharing network for school departments, clubs, and nonprofits.",
+  "type": "module",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node database/seed.js",
+    "reset": "node database/seed.js --reset",
+    "test": "node --test",
+    "sync-layout": "node tools/sync-layout.mjs"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "multer": "^2.5.0"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}

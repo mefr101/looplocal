@@ -1,0 +1,180 @@
+/* ==========================================================================
+   COMPONENTS
+   --------------------------------------------------------------------------
+   Reusable building blocks. Class names follow the pattern
+   .block, .block__part, .block--variant  (e.g. .stat-card__value).
+
+   CONTENTS
+     1. Buttons
+     2. Cards
+     3. Stat cards (dashboard numbers)
+     4. Forms
+     5. Badges
+     6. Alerts and messages
+     7. Grids
+     8. Tables
+   ========================================================================== */
+
+/* 1. BUTTONS --------------------------------------------------------------- */
+/* Bright fill with dark text: readable (about 6:1) in both themes. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--touch-target);
+  padding: 0 var(--space-5);
+  border: 2px solid var(--color-brand);
+  border-radius: var(--radius-sm);
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.button:hover {
+  background: var(--color-brand-hover);
+  border-color: var(--color-brand-hover);
+  color: var(--color-on-brand);
+  transform: translateY(-1px);
+}
+
+.button--secondary {
+  background: transparent;
+  border-color: var(--color-text);
+  color: var(--color-text);
+}
+.button--secondary:hover { background: var(--color-brand-tint); border-color: var(--color-text); color: var(--color-text); }
+
+/* Green: confirm/approve actions. */
+.button--success { background: var(--color-secondary); border-color: var(--color-secondary); }
+.button--success:hover { background: #3bc474; border-color: #3bc474; }
+
+/* Orange: attention actions such as "Add a Resource". */
+.button--accent { background: var(--color-accent); border-color: var(--color-accent); }
+.button--accent:hover { background: #f59a42; border-color: #f59a42; }
+
+.button--danger { background: var(--color-danger); border-color: var(--color-danger); color: var(--color-page); }
+.button--danger:hover { background: var(--color-danger); border-color: var(--color-danger); color: var(--color-page); }
+
+.button[disabled] { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+/* 2. CARDS ----------------------------------------------------------------- */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-5);
+}
+
+.card__title { margin-bottom: var(--space-2); }
+.card__meta  { color: var(--color-text-muted); font-size: var(--text-sm); margin: 0; }
+
+/* 3. STAT CARDS ------------------------------------------------------------ */
+/* The numbers use the mono font so digits line up. */
+.stat-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-top: 4px solid var(--palette-blue);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+}
+/* Each card gets a different top color from the palette. */
+.stat-card:nth-child(3n + 2) { border-top-color: var(--palette-green); }
+.stat-card:nth-child(3n)     { border-top-color: var(--palette-orange); }
+
+.stat-card__value {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  font-weight: 500;
+  color: var(--color-text);
+  margin: 0;
+}
+.stat-card__label { margin: 0; color: var(--color-text-muted); }
+.stat-card__note  { margin: var(--space-1) 0 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+
+/* 4. FORMS ----------------------------------------------------------------- */
+.form-field { margin-bottom: var(--space-4); }
+
+.form-field__label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-weight: 700;
+}
+
+.form-field__hint  { display: block; font-size: var(--text-sm); color: var(--color-text-muted); }
+.form-field__error { display: block; font-size: var(--text-sm); color: var(--color-danger); font-weight: 700; }
+
+.form-input {
+  width: 100%;
+  min-height: var(--touch-target);
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+.form-input[aria-invalid="true"] { border-color: var(--color-danger); }
+
+/* 5. BADGES ---------------------------------------------------------------- */
+.badge {
+  display: inline-block;
+  padding: 2px var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+.badge--success { background: var(--color-success-light); color: var(--color-success); }
+.badge--warning { background: var(--color-warning-light); color: var(--color-warning); }
+.badge--danger  { background: var(--color-danger-light);  color: var(--color-danger); }
+.badge--info    { background: var(--color-info-light);    color: var(--color-info); }
+
+/* 6. ALERTS AND MESSAGES --------------------------------------------------- */
+.alert {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  border-left: 6px solid var(--color-info);
+  background: var(--color-info-light);
+  color: var(--color-info);
+  margin-bottom: var(--space-4);
+}
+.alert--error   { border-color: var(--color-danger);  background: var(--color-danger-light);  color: var(--color-danger); }
+.alert--success { border-color: var(--color-success); background: var(--color-success-light); color: var(--color-success); }
+
+/* Shown on pages that are not built yet. */
+.placeholder-note {
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+/* 7. GRIDS ----------------------------------------------------------------- */
+/* Cards flow into as many columns as fit; each is at least 240px wide. */
+.grid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+.grid--stats { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+/* Label/value pairs, e.g. on the Account page. */
+.detail-list { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-2) var(--space-5); margin: 0 0 var(--space-5); }
+.detail-list dt { color: var(--color-text-muted); }
+.detail-list dd { margin: 0; font-weight: 500; }
+
+/* 8. TABLES ---------------------------------------------------------------- */
+/* Wrap wide tables in .table-scroll so phones can scroll sideways. */
+.table-scroll { overflow-x: auto; }
+
+.table { width: 100%; border-collapse: collapse; background: var(--color-surface); }
+.table th,
+.table td { padding: var(--space-3); text-align: left; border-bottom: 1px solid var(--color-border); }
+.table th { background: var(--color-surface-muted); }

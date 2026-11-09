@@ -1,0 +1,157 @@
+/* ==========================================================================
+   HOME PAGE (index.html)
+   Styles used only on the home page. Shared pieces live in components.css.
+
+   CONTENTS
+     1. Section bands
+     2. Hero
+     3. Photo slot (placeholder until real photos are added)
+     4. How it works steps
+     5. Rescue Engine explainer
+     6. Organization logo row
+     7. Review cards
+     8. Closing call to action
+   ========================================================================== */
+
+/* 1. SECTION BANDS --------------------------------------------------------- */
+.home-section { padding: var(--space-7) 0; }
+.home-section--muted { background: var(--color-surface-muted); }
+.home-section h2 { margin-bottom: var(--space-5); }
+.home-note { margin-top: var(--space-4); }
+
+/* Rows of exactly three cards stretch to fill the width instead of leaving an empty column. */
+.home-section .grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+
+/* 2. HERO ------------------------------------------------------------------ */
+.hero { padding: var(--space-8) 0 var(--space-7); }
+
+.hero__grid {
+  display: grid;
+  gap: var(--space-7);
+  align-items: center;
+  grid-template-columns: 1.1fr 1fr;
+}
+
+.hero__title { font-size: var(--text-3xl); margin-bottom: var(--space-4); }
+.hero__lead  { font-size: var(--text-lg); color: var(--color-text-muted); max-width: 52ch; margin-bottom: var(--space-5); }
+.hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+/* 3. PHOTO SLOT ------------------------------------------------------------ */
+.photo-slot { margin: 0; }
+.photo-slot img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+.photo-slot__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  aspect-ratio: 4 / 3;
+  padding: var(--space-5);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-brand-tint);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+.photo-slot__label { font-family: var(--font-heading); font-size: var(--text-xl); color: var(--color-text); }
+.photo-slot__hint  { font-size: var(--text-sm); }
+
+/* 4. HOW IT WORKS STEPS ---------------------------------------------------- */
+.steps {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.step { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-5); }
+.step h3 { margin-bottom: var(--space-2); }
+.step p { margin: 0; color: var(--color-text-muted); }
+
+/* Numbered circle; each step uses a different palette color. */
+.step__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--palette-blue);
+  color: var(--palette-ink);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+.step:nth-child(2) .step__number { background: var(--palette-green); }
+.step:nth-child(3) .step__number { background: var(--palette-orange); }
+
+/* 5. RESCUE ENGINE EXPLAINER ----------------------------------------------- */
+.engine { display: grid; gap: var(--space-7); grid-template-columns: 1fr 1fr; align-items: start; }
+.engine__rules { padding-left: var(--space-5); }
+.engine__rules li { margin-bottom: var(--space-3); }
+.engine__example-label {
+  display: inline-block;
+  margin-bottom: var(--space-3);
+  padding: 2px var(--space-3);
+  background: var(--color-accent);
+  color: var(--palette-ink);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+}
+.engine__example .table th[scope="row"] { background: transparent; font-weight: 500; }
+.engine__example .table td.mono { white-space: nowrap; }
+.engine__example tfoot th,
+.engine__example tfoot td { font-weight: 700; border-bottom: 0; }
+
+/* 6. ORGANIZATION LOGO ROW ------------------------------------------------- */
+.org-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.org-row__item { display: flex; align-items: center; justify-content: center; min-width: 140px; height: 64px; }
+.org-row__item img { height: 48px; width: auto; }
+.org-row__item--placeholder {
+  flex: 1 1 140px;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+/* 7. REVIEW CARDS ---------------------------------------------------------- */
+.review-card {
+  margin: 0;
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 6px solid var(--palette-green);
+  border-radius: var(--radius-md);
+}
+.review-card blockquote { margin: 0 0 var(--space-3); font-size: var(--text-lg); }
+.review-card blockquote p { margin: 0; }
+.review-card figcaption { color: var(--color-text-muted); font-size: var(--text-sm); }
+.review-card--placeholder { border-style: dashed; border-left-style: dashed; }
+.review-card--placeholder blockquote { color: var(--color-text-muted); font-style: italic; }
+
+/* 8. CLOSING CALL TO ACTION ------------------------------------------------ */
+.home-cta { padding: var(--space-8) 0; text-align: center; background: var(--color-surface); border-top: 1px solid var(--color-border); }
+.home-cta p { color: var(--color-text-muted); font-size: var(--text-lg); }
+
+/* PHONES AND TABLETS: stack two-column layouts. */
+@media (max-width: 860px) {
+  .hero { padding: var(--space-6) 0; }
+  .hero__grid, .engine { grid-template-columns: 1fr; gap: var(--space-6); }
+  .hero__title { font-size: var(--text-2xl); }
+}

@@ -1,0 +1,313 @@
+/* ==========================================================================
+   BASE STYLES
+   --------------------------------------------------------------------------
+   Page-wide defaults: reset, typography, layout, header and footer.
+   Colors and sizes come from tokens.css. Edit those if you only want to
+   change the look.
+
+   CONTENTS
+     1. Reset
+     2. Typography
+     3. Accessibility helpers (skip link, focus, reduced motion)
+     4. Page layout
+     5. Site header (logo, menu, account dropdown, mobile menu)
+     6. Site footer
+   ========================================================================== */
+
+/* 1. RESET ----------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--line-height-body);
+  color: var(--color-text);
+  background: var(--color-page);
+}
+
+/* Make the HTML "hidden" attribute always win, even over display rules like .button. */
+[hidden] { display: none !important; }
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 2. TYPOGRAPHY ------------------------------------------------------------ */
+/* Hammersmith One has a single weight, so headings stay at normal weight
+   (a bold setting would make the browser fake it and look smeared). */
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  line-height: var(--line-height-heading);
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-3);
+}
+
+h1 { font-size: var(--text-2xl); }
+h2 { font-size: var(--text-xl); }
+h3 { font-size: var(--text-lg); }
+
+p { margin: 0 0 var(--space-4); }
+
+a { color: var(--color-link); text-underline-offset: 3px; }
+a:hover { color: var(--color-link-hover); }
+
+code, .mono { font-family: var(--font-mono); font-size: 0.92em; }
+
+/* 3. ACCESSIBILITY HELPERS ------------------------------------------------- */
+
+/* Visible keyboard focus on everything interactive. */
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* "Skip to main content" link: hidden until a keyboard user tabs to it. */
+.skip-link {
+  position: absolute;
+  left: var(--space-3);
+  top: -100px;
+  padding: var(--space-2) var(--space-4);
+  background: var(--palette-ink);
+  color: #ffffff;
+  border-radius: var(--radius-sm);
+  z-index: 200;
+}
+.skip-link:focus { top: var(--space-3); }
+
+/* Text for screen readers only. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* People who ask their device for less motion get none. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 4. PAGE LAYOUT ----------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.page-main { padding: var(--space-6) 0 var(--space-8); }
+.page-title { margin-bottom: var(--space-2); }
+.page-lead  { color: var(--color-text-muted); margin-bottom: var(--space-6); max-width: 60ch; }
+
+/* 5. SITE HEADER ----------------------------------------------------------- */
+/* Sticks to the top; the translucent background blurs what scrolls beneath it. */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-header-bg);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Thin blue-green-orange strip under the header. Delete this block to remove it. */
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 3px;
+  background: var(--gradient-accent);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: var(--header-height);
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.site-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  color: var(--color-text);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.site-logo:hover { color: var(--color-text); }
+.site-logo svg { color: var(--palette-blue); }
+
+/* The collapsible area that holds the links and the action buttons. */
+.site-menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex: 1;
+}
+
+.site-nav__list {
+  display: flex;
+  align-items: center;   /* keeps every link vertically centered in the header */
+  gap: var(--space-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.site-nav__list li { display: flex; align-items: center; }
+
+.site-nav__link {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;   /* a link never wraps onto two lines and stretches the header */
+  min-height: var(--touch-target);
+  padding: 0 var(--space-3);
+  border-bottom: 3px solid transparent;
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 500;
+}
+.site-nav__link:hover { border-bottom-color: var(--palette-blue); color: var(--color-text); }
+
+/* The link for the page you are on. */
+.site-nav__link[aria-current="page"] {
+  border-bottom-color: var(--palette-orange);
+  font-weight: 700;
+}
+
+/* Right-hand group: Add a Resource, theme toggle, account. */
+.site-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.site-actions .button,
+.site-actions .icon-button { white-space: nowrap; }
+
+/* Holds Sign in / Sign up, or the Account menu once signed in. */
+.site-auth { display: flex; align-items: center; gap: var(--space-2); }
+
+/* Square icon-style buttons (theme toggle, hamburger). */
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+.icon-button:hover { background: var(--color-brand-tint); }
+
+/* Account dropdown. */
+.account-menu { position: relative; }
+
+.account-menu__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--space-2));
+  min-width: 260px;
+  padding: var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-raised);
+}
+.account-menu__panel[hidden] { display: none; }
+
+.account-menu__who {
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  margin-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.account-menu__who strong { display: block; color: var(--color-text); font-size: var(--text-base); }
+
+.account-menu__item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: var(--touch-target);
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.account-menu__item:hover { background: var(--color-brand-tint); color: var(--color-text); }
+
+/* Hamburger button: hidden on large screens. */
+.nav-toggle { display: none; }
+
+/* PHONES AND TABLETS: collapse the menu behind the hamburger button. */
+@media (max-width: 1024px) {
+  .site-header__inner { flex-wrap: wrap; padding-top: var(--space-2); padding-bottom: var(--space-2); }
+  .nav-toggle { display: inline-flex; }
+
+  .site-menu {
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--space-3) 0 var(--space-4);
+    border-top: 1px solid var(--color-border);
+  }
+  .site-menu.is-open { display: flex; }
+
+  .site-nav__list { flex-direction: column; }
+  .site-nav__link { width: 100%; border-bottom: 0; border-left: 4px solid transparent; }
+  .site-nav__link:hover { border-left-color: var(--palette-blue); }
+  .site-nav__link[aria-current="page"] { border-left-color: var(--palette-orange); }
+
+  .site-actions, .site-auth { flex-direction: column; align-items: stretch; }
+  .site-actions .button, .site-actions .icon-button { width: 100%; }
+
+  /* Dropdown opens inline instead of floating. */
+  .account-menu__panel { position: static; margin-top: var(--space-2); box-shadow: none; }
+}
+
+/* 6. SITE FOOTER ----------------------------------------------------------- */
+.site-footer {
+  background: var(--color-surface-muted);
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-5) 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.site-footer p { margin: 0 0 var(--space-2); }

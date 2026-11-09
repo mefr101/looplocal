@@ -1,0 +1,43 @@
+/* ==========================================================================
+   RESOURCE EXCHANGE PAGE
+   Styles used only on resources.html. Shared pieces live in components.css.
+
+   CONTENTS
+     1. Filter bar
+     2. Resource cards
+   ========================================================================== */
+
+/* 1. FILTER BAR ------------------------------------------------------------ */
+.filters {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-bottom: var(--space-4);
+}
+
+/* 2. RESOURCE CARDS -------------------------------------------------------- */
+.resource-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Photo area. Listings without a photo show a tinted placeholder. */
+.resource-card__photo {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  object-fit: cover;
+  background: var(--color-brand-tint);
+}
+.resource-card__photo--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.resource-card__body { padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
+.resource-card__facts { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+.resource-card__value { font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
