@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sign up | LoopLocal</title>
-  <meta name="description" content="Create a LoopLocal account for your school department, club, or nonprofit.">
+  <meta name="description" content="Join your organization on LoopLocal with its join code, or create a new organization.">
   <script src="js/theme.js"></script>
   <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="css/tokens.css">
@@ -39,11 +39,10 @@
                    Values: signedOut | signedIn | admin | publisher -->
               <li data-show="signedOut"><a class="site-nav__link" href="index.html#how-it-works">How it works</a></li>
               <li data-show="signedIn" hidden><a class="site-nav__link" href="dashboard.html">Dashboard</a></li>
-              <li><a class="site-nav__link" href="resources.html">Resources</a></li>
+              <li data-show="signedIn" hidden><a class="site-nav__link" href="resources.html">Resources</a></li>
               <li data-show="signedIn" hidden><a class="site-nav__link" href="requests.html">Request</a></li>
               <li data-show="signedIn" hidden><a class="site-nav__link" href="matches.html">Matches</a></li>
-              <li data-show="admin" hidden><a class="site-nav__link" href="admin.html">Admin</a></li>
-            </ul>
+              <li data-show="admin" hidden><a class="site-nav__link" href="admin.html">Admin</a></li>        </ul>
           </nav>
 
           <div class="site-actions">
@@ -66,39 +65,92 @@
   <!-- HEADER:END -->
 
   <main id="main" class="page-main">
-    <div class="container" style="max-width: 480px">
+    <div class="container container--narrow">
       <h1 class="page-title">Create an account</h1>
       <p class="page-lead">Already registered? <a href="login.html">Sign in</a>.</p>
 
       <form id="register-form" class="card" novalidate>
         <div id="register-error" class="alert alert--error" role="alert" hidden></div>
 
-        <div class="form-field">
-          <label class="form-field__label" for="name">Your name</label>
-          <input class="form-input" id="name" name="name" type="text" autocomplete="name" required>
-          <span class="form-field__error" id="name-error"></span>
-        </div>
-        <div class="form-field">
-          <label class="form-field__label" for="email">Email</label>
-          <input class="form-input" id="email" name="email" type="email" autocomplete="email" required>
-          <span class="form-field__error" id="email-error"></span>
-        </div>
-        <div class="form-field">
-          <label class="form-field__label" for="password">Password</label>
-          <input class="form-input" id="password" name="password" type="password" autocomplete="new-password"
-                 minlength="8" required aria-describedby="password-hint password-error">
-          <span class="form-field__hint" id="password-hint">At least 8 characters.</span>
-          <span class="form-field__error" id="password-error"></span>
-        </div>
-        <div class="form-field">
-          <label class="form-field__label" for="organizationId">Your organization</label>
-          <select class="form-input" id="organizationId" name="organizationId" required>
-            <option value="">Choose&hellip;</option>
-          </select>
-          <span class="form-field__error" id="organizationId-error"></span>
+        <!-- Step 0: are they joining or starting an organization? -->
+        <fieldset class="form-fieldset" style="padding-bottom: var(--space-3)">
+          <legend>What would you like to do?</legend>
+          <div class="check-group" role="radiogroup" aria-label="Sign-up type">
+            <label class="check"><input type="radio" name="mode" value="join" checked> Join my organization</label>
+            <label class="check"><input type="radio" name="mode" value="create"> Create a new organization</label>
+          </div>
+        </fieldset>
+
+        <!-- JOIN: enter the code, then choose units -->
+        <div id="join-section">
+          <div class="form-field">
+            <label class="form-field__label" for="joinCode">Organization join code</label>
+            <div class="inline-field">
+              <input class="form-input" id="joinCode" name="joinCode" type="text" maxlength="12" autocomplete="off"
+                     autocapitalize="characters" spellcheck="false" aria-describedby="joinCode-hint joinCode-error">
+              <button class="button button--secondary" type="button" id="check-code">Check code</button>
+            </div>
+            <span class="form-field__hint" id="joinCode-hint">Ask your organization's admin for the code. It looks like ABCD-EFGH.</span>
+            <span class="form-field__error" id="joinCode-error"></span>
+          </div>
+
+          <!-- Shown after a valid code. -->
+          <div id="units-section" hidden>
+            <p class="alert" id="joining-note" role="status"></p>
+            <div class="form-field">
+              <span class="form-field__label" id="unitIds-label">Which unit(s) are you part of?</span>
+              <div class="check-group" id="unitIds" role="group" aria-labelledby="unitIds-label"></div>
+              <span class="form-field__hint">Choose every department, club, or team you belong to. An admin can change this later.</span>
+              <span class="form-field__error" id="unitIds-error"></span>
+            </div>
+          </div>
         </div>
 
-        <button class="button" type="submit">Create account</button>
+        <!-- CREATE: organization details -->
+        <div id="create-section" hidden>
+          <p class="alert">
+            You will become this organization's admin. You can then add units, share a join code with your
+            colleagues, and set how approvals work.
+          </p>
+          <div class="form-field">
+            <label class="form-field__label" for="organizationName">Organization name</label>
+            <input class="form-input" id="organizationName" name="organizationName" type="text" maxlength="100"
+                   aria-describedby="organizationName-error">
+            <span class="form-field__error" id="organizationName-error"></span>
+          </div>
+          <div class="form-field">
+            <label class="form-field__label" for="type">Type of organization</label>
+            <select class="form-input" id="type" name="type" aria-describedby="type-error">
+              <option value="school">School</option>
+              <option value="nonprofit">Nonprofit</option>
+              <option value="other">Other</option>
+            </select>
+            <span class="form-field__error" id="type-error"></span>
+          </div>
+        </div>
+
+        <!-- About you (shared by both paths; hidden until a valid code is checked when joining) -->
+        <div id="person-section">
+          <div class="form-field">
+            <label class="form-field__label" for="name">Your name</label>
+            <input class="form-input" id="name" name="name" type="text" autocomplete="name" required aria-describedby="name-error">
+            <span class="form-field__error" id="name-error"></span>
+          </div>
+          <div class="form-field">
+            <label class="form-field__label" for="email">Email</label>
+            <input class="form-input" id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-error">
+            <span class="form-field__error" id="email-error"></span>
+          </div>
+          <div class="form-field">
+            <label class="form-field__label" for="password">Password</label>
+            <input class="form-input" id="password" name="password" type="password" autocomplete="new-password"
+                   minlength="8" required aria-describedby="password-hint password-error">
+            <span class="form-field__hint" id="password-hint">At least 8 characters.</span>
+            <span class="form-field__error" id="password-error"></span>
+          </div>
+        </div>
+
+        <button class="button" type="submit" id="submit-button">Create account</button>
       </form>
     </div>
   </main>
@@ -106,7 +158,7 @@
   <!-- FOOTER:START (generated by tools/sync-layout.mjs; edit tools/partials/) -->
     <footer class="site-footer">
       <div class="container">
-        <p><strong>LoopLocal</strong> helps schools, clubs, and nonprofits share what they already have.</p>
+        <p><strong>LoopLocal</strong> helps the departments, clubs, and teams inside an organization share what they already have.</p>
         <p>Savings figures are estimates based on listed replacement values.
            <a href="sources.html">Sources &amp; credits</a></p>
       </div>

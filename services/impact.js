@@ -6,25 +6,29 @@
 //     The UI must label every savings figure as an estimate.
 import { db } from '../database/db.js';
 
-export function getDashboardStats() {
-  const count = (sql) => db.prepare(sql).get().n;
+/** Numbers for one organization's dashboard. Every query is limited to that organization. */
+export function getDashboardStats(organizationId) {
+  const count = (sql) => db.prepare(sql).get(organizationId).n;
 
   return {
     availableResources: count(
       `SELECT COUNT(*) AS n FROM resources
-       WHERE status = 'approved' AND quantity_total - quantity_reserved > 0`),
-    outstandingRequests: count("SELECT COUNT(*) AS n FROM requests WHERE status = 'open'"),
+       WHERE organization_id = ? AND status = 'approved' AND quantity_total - quantity_reserved > 0`),
+    outstandingRequests: count("SELECT COUNT(*) AS n FROM requests WHERE organization_id = ? AND status = 'open'"),
+    // Everything waiting on an admin: plans, new listings, and requests that need review.
     pendingApprovals:
-      count("SELECT COUNT(*) AS n FROM reservations WHERE status = 'pending_approval'") +
-      count("SELECT COUNT(*) AS n FROM resources WHERE status = 'pending_review'"),
-    completedTransfers: count('SELECT COUNT(*) AS n FROM impact_ledger'),
-    estimatedSavingsCents: count('SELECT COALESCE(SUM(cost_avoided_cents), 0) AS n FROM impact_ledger'),
+      count("SELECT COUNT(*) AS n FROM reservations WHERE organization_id = ? AND status = 'pending_approval'") +
+      count("SELECT COUNT(*) AS n FROM resources WHERE organization_id = ? AND status = 'pending_review'") +
+      count("SELECT COUNT(*) AS n FROM requests WHERE organization_id = ? AND status = 'pending_review'"),
+    completedTransfers: count('SELECT COUNT(*) AS n FROM impact_ledger WHERE organization_id = ?'),
+    estimatedSavingsCents: count(
+      'SELECT COALESCE(SUM(cost_avoided_cents), 0) AS n FROM impact_ledger WHERE organization_id = ?'),
   };
 }
 
 /**
- * Numbers safe to show on the public home page. Only totals from COMPLETED
- * transfers (the impact ledger), never anything about individual requests or people.
+ * Totals safe to show on the public home page: platform-wide, completed transfers only,
+ * with no organization named and nothing about individual items or people.
  */
 export function getPublicStats() {
   const row = db.prepare(

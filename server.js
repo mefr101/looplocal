@@ -3,6 +3,8 @@ import fs from 'node:fs';
 import express from 'express';
 import session from 'express-session';
 import { config } from './config.js';
+import { ensureSchema } from './database/db.js';
+import { attachUser } from './middleware/auth.js';
 import authRoutes from './routes/auth.js';
 import metaRoutes from './routes/meta.js';
 import resourceRoutes from './routes/resources.js';
@@ -12,6 +14,7 @@ import adminRoutes from './routes/admin.js';
 import statsRoutes from './routes/stats.js';
 
 fs.mkdirSync(config.uploadDir, { recursive: true });
+ensureSchema(); // creates tables on first run; stops with a clear message if the database is outdated
 
 const app = express();
 app.disable('x-powered-by');
@@ -29,6 +32,9 @@ app.use(session({
 
 // Health check for hosting platforms.
 app.get('/health', (_req, res) => res.json({ ok: true }));
+
+// Every API request first learns who is signed in (req.user), freshly loaded from the database.
+app.use('/api', attachUser);
 
 // API routes. Each file in routes/ only handles HTTP; logic lives in services/.
 app.use('/api/auth', authRoutes);
@@ -48,9 +54,12 @@ app.use(express.static(config.publicDir, { extensions: ['html'] }));
 
 // Central error handler: never leak stack traces to the browser.
 app.use((error, _req, res, _next) => {
-  console.error(error);
   const status = error.status || 500;
-  res.status(status).json({ error: status === 500 ? 'Something went wrong on the server.' : error.message });
+  if (status === 500) console.error(error); // expected 4xx answers (not found, conflict) aren't worth logging
+  res.status(status).json({
+    error: status === 500 ? 'Something went wrong on the server.' : error.message,
+    ...(status !== 500 && error.fields ? { fields: error.fields } : {}),
+  });
 });
 
 app.listen(config.port, () => {

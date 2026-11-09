@@ -41,3 +41,4 @@
 .resource-card__body { padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
 .resource-card__facts { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
 .resource-card__value { font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
+.resource-card__request { margin-top: auto; align-self: flex-start; } /* pins the button to the card bottom */

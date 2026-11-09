@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Submit a Request | LoopLocal</title>
-  <meta name="description" content="Tell LoopLocal what your organization needs and we will look for surplus to cover it.">
+  <meta name="description" content="Tell LoopLocal what your unit needs and we will look for surplus elsewhere in your organization.">
   <script src="js/theme.js"></script>
   <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="css/tokens.css">
@@ -39,11 +39,10 @@
                    Values: signedOut | signedIn | admin | publisher -->
               <li data-show="signedOut"><a class="site-nav__link" href="index.html#how-it-works">How it works</a></li>
               <li data-show="signedIn" hidden><a class="site-nav__link" href="dashboard.html">Dashboard</a></li>
-              <li><a class="site-nav__link" href="resources.html">Resources</a></li>
+              <li data-show="signedIn" hidden><a class="site-nav__link" href="resources.html">Resources</a></li>
               <li data-show="signedIn" hidden><a class="site-nav__link" href="requests.html">Request</a></li>
               <li data-show="signedIn" hidden><a class="site-nav__link" href="matches.html">Matches</a></li>
-              <li data-show="admin" hidden><a class="site-nav__link" href="admin.html">Admin</a></li>
-            </ul>
+              <li data-show="admin" hidden><a class="site-nav__link" href="admin.html">Admin</a></li>        </ul>
           </nav>
 
           <div class="site-actions">
@@ -66,22 +65,194 @@
   <!-- HEADER:END -->
 
   <main id="main" class="page-main">
-    <div class="container">
-      <h1 class="page-title">Submit a Request</h1>
-      <p class="page-lead">Tell us what you need, how many, and by when.</p>
-      <div class="placeholder-note">The request form is coming next. See the roadmap in the README.</div>
+    <div class="container container--narrow">
+      <h1 class="page-title" id="page-heading">Submit a Request</h1>
+      <p class="page-lead">
+        Requesting in <strong id="org-name">your organization</strong>.
+        Tell us what you need, how many, and when. LoopLocal will look for surplus that other units have listed.
+      </p>
+
+      <!-- Shown when this organization has turned on request review (see requests.js). -->
+      <div class="alert" id="review-note" role="note" hidden>
+        Your organization's admins review each request before matching starts. You will see its status on the Matches page.
+      </div>
+
+      <!-- Filled in when validation fails; links jump to each problem field. -->
+      <div class="alert alert--error error-summary" id="form-errors" role="alert" tabindex="-1" hidden></div>
+
+      <form id="request-form" class="card" novalidate>
+        <div class="form-grid">
+
+          <!-- WHO: the unit asking -->
+          <div class="form-field form-field--wide">
+            <label class="form-field__label" for="unitId">Which unit is this request for?</label>
+            <select class="form-input" id="unitId" name="unitId" required aria-describedby="unitId-error"></select>
+            <span class="form-field__error" id="unitId-error"></span>
+          </div>
+
+          <!-- WHAT: item with type-ahead suggestions -->
+          <div class="form-field form-field--wide">
+            <label class="form-field__label" for="itemName">What do you need?</label>
+            <div class="combobox">
+              <input class="form-input" id="itemName" name="itemName" type="text" maxlength="100"
+                     role="combobox" aria-autocomplete="list" aria-expanded="false"
+                     aria-controls="item-suggestions" autocomplete="off" required
+                     aria-describedby="itemName-hint itemName-error">
+              <ul class="combobox__list" id="item-suggestions" role="listbox" aria-label="Suggested items" hidden></ul>
+            </div>
+            <span class="form-field__hint" id="itemName-hint" aria-live="polite">
+              Start typing to see what other units have listed. You can also describe something new.
+            </span>
+            <span class="form-field__error" id="itemName-error"></span>
+          </div>
+
+          <div class="form-field">
+            <label class="form-field__label" for="categoryId">Category</label>
+            <select class="form-input" id="categoryId" name="categoryId" required aria-describedby="categoryId-error">
+              <option value="">Choose&hellip;</option>
+            </select>
+            <span class="form-field__error" id="categoryId-error"></span>
+          </div>
+
+          <div class="form-field">
+            <label class="form-field__label" for="quantity">Quantity</label>
+            <input class="form-input" id="quantity" name="quantity" type="number" inputmode="numeric"
+                   min="1" max="10000" step="1" required aria-describedby="quantity-hint quantity-error">
+            <span class="form-field__hint" id="quantity-hint">A whole number from 1 to 10,000.</span>
+            <span class="form-field__error" id="quantity-error"></span>
+          </div>
+
+          <!-- WHY and WHEN -->
+          <div class="form-field form-field--wide">
+            <label class="form-field__label" for="intendedUse">How will you use it?</label>
+            <textarea class="form-input" id="intendedUse" name="intendedUse" maxlength="500" required
+                      aria-describedby="intendedUse-hint intendedUse-error"></textarea>
+            <span class="form-field__counter" id="intendedUse-counter" aria-hidden="true">0/500</span>
+            <span class="form-field__hint" id="intendedUse-hint">A sentence or two helps admins and other units understand the need.</span>
+            <span class="form-field__error" id="intendedUse-error"></span>
+          </div>
+
+          <div class="form-field">
+            <label class="form-field__label" for="neededBy">Needed by</label>
+            <input class="form-input" id="neededBy" name="neededBy" type="date" required
+                   aria-describedby="neededBy-hint neededBy-error">
+            <span class="form-field__hint" id="neededBy-hint">Today or any date within the next year.</span>
+            <span class="form-field__error" id="neededBy-error"></span>
+          </div>
+
+          <!-- HAND-OFF -->
+          <div class="form-field--wide">
+            <fieldset class="form-fieldset">
+              <legend>Hand-off</legend>
+
+              <div class="form-field">
+                <span class="form-field__label" id="fulfillmentMethod-label">How should the items reach you?</span>
+                <div class="check-group" role="radiogroup" aria-labelledby="fulfillmentMethod-label" id="fulfillmentMethod">
+                  <label class="check"><input type="radio" name="fulfillmentMethod" value="pickup" checked> We will pick them up</label>
+                  <label class="check"><input type="radio" name="fulfillmentMethod" value="delivery"> Please deliver them</label>
+                </div>
+                <span class="form-field__error" id="fulfillmentMethod-error"></span>
+              </div>
+
+              <div class="form-field" id="deliver-field" hidden>
+                <label class="form-field__label" for="deliverToLocationId">Deliver to</label>
+                <select class="form-input" id="deliverToLocationId" name="deliverToLocationId" aria-describedby="deliverToLocationId-error">
+                  <option value="">Choose a location&hellip;</option>
+                </select>
+                <span class="form-field__error" id="deliverToLocationId-error"></span>
+              </div>
+
+              <p class="form-field__hint" style="margin-bottom: var(--space-4)">
+                When can your unit collect or receive the items? These help LoopLocal check that a hand-off is
+                realistic. Leave anything blank if it does not matter.
+              </p>
+
+              <div class="form-field">
+                <span class="form-field__label" id="pickupDays-label">Days you can collect or receive</span>
+                <div class="check-group" role="group" aria-labelledby="pickupDays-label" id="pickupDays">
+                  <label class="check"><input type="checkbox" name="pickupDays" value="mon" id="day-mon"> Mon</label>
+                  <label class="check"><input type="checkbox" name="pickupDays" value="tue"> Tue</label>
+                  <label class="check"><input type="checkbox" name="pickupDays" value="wed"> Wed</label>
+                  <label class="check"><input type="checkbox" name="pickupDays" value="thu"> Thu</label>
+                  <label class="check"><input type="checkbox" name="pickupDays" value="fri"> Fri</label>
+                  <label class="check"><input type="checkbox" name="pickupDays" value="sat"> Sat</label>
+                  <label class="check"><input type="checkbox" name="pickupDays" value="sun"> Sun</label>
+                </div>
+                <span class="form-field__hint">Leave all unchecked if any day works.</span>
+                <span class="form-field__error" id="pickupDays-error"></span>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-field">
+                  <label class="form-field__label" for="pickupTimeStart">Earliest time</label>
+                  <input class="form-input" id="pickupTimeStart" name="pickupTimeStart" type="time"
+                         aria-describedby="pickupTimeStart-error">
+                  <span class="form-field__error" id="pickupTimeStart-error"></span>
+                </div>
+                <div class="form-field">
+                  <label class="form-field__label" for="pickupTimeEnd">Latest time</label>
+                  <input class="form-input" id="pickupTimeEnd" name="pickupTimeEnd" type="time"
+                         aria-describedby="pickupTimeEnd-error">
+                  <span class="form-field__error" id="pickupTimeEnd-error"></span>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label class="form-field__label" for="notes">Anything else about the hand-off? (optional)</label>
+                <textarea class="form-input" id="notes" name="notes" maxlength="300" aria-describedby="notes-error"></textarea>
+                <span class="form-field__counter" id="notes-counter" aria-hidden="true">0/300</span>
+                <span class="form-field__error" id="notes-error"></span>
+              </div>
+            </fieldset>
+          </div>
+
+          <!-- FLEXIBILITY -->
+          <div class="form-field form-field--wide">
+            <label class="check-block" for="acceptsSubstitutes">
+              <input type="checkbox" id="acceptsSubstitutes" name="acceptsSubstitutes">
+              <span>
+                <strong>A similar item is fine</strong>
+                <span class="form-field__hint">
+                  If there is not enough of the exact item, LoopLocal may suggest compatible substitutes,
+                  such as storage tubs in place of containers. You choose which ones to include.
+                </span>
+              </span>
+            </label>
+            <span class="form-field__error" id="acceptsSubstitutes-error"></span>
+          </div>
+
+          <div class="form-field form-field--wide">
+            <label class="check-block" for="acceptsPartial">
+              <input type="checkbox" id="acceptsPartial" name="acceptsPartial">
+              <span>
+                <strong>Part of the request is OK</strong>
+                <span class="form-field__hint">
+                  If the full quantity is not available, you can still submit a plan that covers only part of it.
+                </span>
+              </span>
+            </label>
+            <span class="form-field__error" id="acceptsPartial-error"></span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="button" type="submit" id="submit-button">Submit request</button>
+          <a class="button button--secondary" href="matches.html">Cancel</a>
+        </div>
+      </form>
     </div>
   </main>
 
   <!-- FOOTER:START (generated by tools/sync-layout.mjs; edit tools/partials/) -->
     <footer class="site-footer">
       <div class="container">
-        <p><strong>LoopLocal</strong> helps schools, clubs, and nonprofits share what they already have.</p>
+        <p><strong>LoopLocal</strong> helps the departments, clubs, and teams inside an organization share what they already have.</p>
         <p>Savings figures are estimates based on listed replacement values.
            <a href="sources.html">Sources &amp; credits</a></p>
       </div>
     </footer>
   <!-- FOOTER:END -->
   <script type="module" src="js/layout.js"></script>
+  <script type="module" src="js/requests.js"></script>
 </body>
 </html>

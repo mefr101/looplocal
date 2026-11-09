@@ -4,12 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Administration | LoopLocal</title>
-  <meta name="description" content="Review listings, approve requests and transfers, and see impact statistics.">
+  <meta name="description" content="Manage your organization: join code, units, people, and requests waiting for review.">
   <script src="js/theme.js"></script>
   <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/admin.css">
 </head>
 <body data-requires="admin">
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -39,11 +40,10 @@
                    Values: signedOut | signedIn | admin | publisher -->
               <li data-show="signedOut"><a class="site-nav__link" href="index.html#how-it-works">How it works</a></li>
               <li data-show="signedIn" hidden><a class="site-nav__link" href="dashboard.html">Dashboard</a></li>
-              <li><a class="site-nav__link" href="resources.html">Resources</a></li>
+              <li data-show="signedIn" hidden><a class="site-nav__link" href="resources.html">Resources</a></li>
               <li data-show="signedIn" hidden><a class="site-nav__link" href="requests.html">Request</a></li>
               <li data-show="signedIn" hidden><a class="site-nav__link" href="matches.html">Matches</a></li>
-              <li data-show="admin" hidden><a class="site-nav__link" href="admin.html">Admin</a></li>
-            </ul>
+              <li data-show="admin" hidden><a class="site-nav__link" href="admin.html">Admin</a></li>        </ul>
           </nav>
 
           <div class="site-actions">
@@ -67,21 +67,80 @@
 
   <main id="main" class="page-main">
     <div class="container">
-      <h1 class="page-title">Administration &amp; Analytics</h1>
-      <p class="page-lead">Admin accounts only.</p>
-      <div class="placeholder-note">Review queues, conflict resolution, and impact charts are coming next.</div>
+      <h1 class="page-title">Administration</h1>
+      <p class="page-lead">Manage <strong id="org-name">your organization</strong>: who can join, which units exist, and who does what.</p>
+
+      <!-- Shown right after creating an organization (?welcome=1). -->
+      <div class="alert alert--success" id="welcome" role="status" hidden>
+        Your organization is ready. Next: add your departments, clubs, and teams as units, then share the join code
+        with your colleagues so they can sign up.
+      </div>
+      <!-- Result of the last action. -->
+      <div class="alert" id="status-message" role="status" hidden></div>
+
+      <!-- JOIN CODE -->
+      <section class="card admin-section" aria-labelledby="code-heading">
+        <h2 id="code-heading">Join code</h2>
+        <p>Share this code so colleagues can join your organization. Anyone with it can sign up as a member, so
+           regenerate it if it is shared by mistake; the old code stops working immediately.</p>
+        <p class="join-code" id="join-code" aria-live="polite">&hellip;</p>
+        <button class="button button--secondary" type="button" id="regenerate-code">Generate a new code</button>
+      </section>
+
+      <!-- REQUESTS WAITING FOR REVIEW -->
+      <section class="card admin-section" aria-labelledby="review-heading">
+        <h2 id="review-heading">Requests waiting for review</h2>
+        <div id="review-box" aria-live="polite">Loading&hellip;</div>
+      </section>
+
+      <!-- UNITS -->
+      <section class="card admin-section" aria-labelledby="units-heading">
+        <h2 id="units-heading">Units</h2>
+        <p>Departments, clubs, and teams. Listings and requests belong to a unit.</p>
+        <div id="units-box" aria-live="polite">Loading&hellip;</div>
+
+        <form id="add-unit-form" class="inline-form" novalidate>
+          <div class="form-field">
+            <label class="form-field__label" for="new-unit-name">New unit name</label>
+            <input class="form-input" id="new-unit-name" type="text" maxlength="60" aria-describedby="new-unit-name-error">
+            <span class="form-field__error" id="new-unit-name-error"></span>
+          </div>
+          <div class="form-field">
+            <label class="form-field__label" for="new-unit-kind">Type</label>
+            <select class="form-input" id="new-unit-kind">
+              <option value="department">Department</option>
+              <option value="club">Club</option>
+              <option value="team">Team</option>
+              <option value="program">Program</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <button class="button" type="submit">Add unit</button>
+        </form>
+      </section>
+
+      <!-- PEOPLE -->
+      <section class="card admin-section" aria-labelledby="people-heading">
+        <h2 id="people-heading">People</h2>
+        <p>Admins run the organization. Unit managers can publish and manage their unit's listings. Members can browse and
+           make requests for their units. Changes apply immediately.</p>
+        <div id="people-box" aria-live="polite">Loading&hellip;</div>
+      </section>
+
+      <div class="placeholder-note">Listing review, plan and transfer approval, conflict resolution, settings, and analytics are coming next.</div>
     </div>
   </main>
 
   <!-- FOOTER:START (generated by tools/sync-layout.mjs; edit tools/partials/) -->
     <footer class="site-footer">
       <div class="container">
-        <p><strong>LoopLocal</strong> helps schools, clubs, and nonprofits share what they already have.</p>
+        <p><strong>LoopLocal</strong> helps the departments, clubs, and teams inside an organization share what they already have.</p>
         <p>Savings figures are estimates based on listed replacement values.
            <a href="sources.html">Sources &amp; credits</a></p>
       </div>
     </footer>
   <!-- FOOTER:END -->
   <script type="module" src="js/layout.js"></script>
+  <script type="module" src="js/admin.js"></script>
 </body>
 </html>

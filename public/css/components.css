@@ -8,7 +8,7 @@
      1. Buttons
      2. Cards
      3. Stat cards (dashboard numbers)
-     4. Forms
+     4. Forms (fields, grids, fieldsets, checkboxes, error summary, type-ahead)
      5. Badges
      6. Alerts and messages
      7. Grids
@@ -120,6 +120,87 @@
 }
 .form-input[aria-invalid="true"] { border-color: var(--color-danger); }
 
+/* Two-column form layout; fields marked .form-field--wide span both columns. */
+.form-grid { display: grid; gap: 0 var(--space-5); grid-template-columns: 1fr 1fr; }
+.form-field--wide { grid-column: 1 / -1; }
+@media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+
+/* A text box with a button beside it (e.g. a code and its "Check" button). */
+.inline-field { display: flex; gap: var(--space-2); }
+.inline-field .form-input { flex: 1; }
+.inline-field .button { flex-shrink: 0; }
+
+/* Multi-line text boxes. */
+textarea.form-input { min-height: 96px; resize: vertical; line-height: var(--line-height-body); }
+.form-field__counter { float: right; font-family: var(--font-mono); font-size: var(--text-sm); color: var(--color-text-muted); }
+
+/* A bordered group of related fields (e.g. "Pickup constraints"). */
+.form-fieldset {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-4) var(--space-4) 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.form-fieldset > legend { padding: 0 var(--space-2); font-weight: 700; }
+
+/* Row of checkboxes that look like toggle chips (e.g. days of the week). */
+.check-group { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-2); }
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--touch-target);
+  padding: 0 var(--space-3);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+.check input { width: 18px; height: 18px; accent-color: var(--palette-blue); }
+.check:has(input:checked) { background: var(--color-brand-tint); border-color: var(--color-text); }
+.check:has(input:focus-visible) { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+
+/* A single yes/no option with a longer explanation underneath. */
+.check-block { display: flex; align-items: flex-start; gap: var(--space-3); }
+.check-block input { width: 22px; height: 22px; margin-top: 3px; accent-color: var(--palette-blue); flex-shrink: 0; }
+
+/* Row of buttons at the bottom of a form. */
+.form-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-4); }
+
+/* Summary shown above a form when validation fails; links jump to each problem field. */
+.error-summary ul { margin: var(--space-2) 0 0; padding-left: var(--space-5); }
+.error-summary a { color: inherit; font-weight: 700; }
+
+/* Type-ahead: a text box with a list of suggestions underneath. */
+.combobox { position: relative; }
+.combobox__list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 2px);
+  z-index: 30;
+  max-height: 300px;
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--space-1) 0;
+  list-style: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-raised);
+}
+.combobox__option {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+}
+.combobox__option[aria-selected="true"],
+.combobox__option:hover { background: var(--color-brand-tint); }
+.combobox__meta { color: var(--color-text-muted); font-size: var(--text-sm); }
+
 /* 5. BADGES ---------------------------------------------------------------- */
 .badge {
   display: inline-block;
@@ -164,6 +245,10 @@
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
 .grid--stats { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+/* A list with no bullets. */
+.plain-list { list-style: none; margin: 0; padding: 0; }
+.plain-list li { margin-bottom: var(--space-1); }
 
 /* Label/value pairs, e.g. on the Account page. */
 .detail-list { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-2) var(--space-5); margin: 0 0 var(--space-5); }

@@ -1,8 +1,10 @@
 // Reservations - the code that prevents two requests from claiming the same stock.
 //
-// Planned flow for submitPlan(requestId, userId):
+// Planned flow for submitPlan(requestId, user, planTheRequesterSaw):
 //   1. withTransaction(...)             -> BEGIN IMMEDIATE (takes the write lock)
-//   2. Re-run buildFulfillmentPlan()    -> never trust a plan the browser sends back
+//   2. Re-run buildFulfillmentPlan()    -> never trust a plan the browser sends back.
+//      If it differs from the plan the requester saw, reserve NOTHING and return the new
+//      plan for them to confirm. Everything is limited to the user's organization.
 //   3. For each line:
 //        UPDATE resources
 //           SET quantity_reserved = quantity_reserved + :qty

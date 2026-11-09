@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>LoopLocal | Share supplies, skip the purchase</title>
-  <meta name="description" content="LoopLocal helps school departments, clubs, and nonprofits share surplus supplies instead of buying new.">
+  <meta name="description" content="LoopLocal helps the departments, clubs, and teams inside one organization share surplus supplies instead of buying new.">
   <script src="js/theme.js"></script>
   <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="css/tokens.css">
@@ -40,11 +40,10 @@
                    Values: signedOut | signedIn | admin | publisher -->
               <li data-show="signedOut"><a class="site-nav__link" href="index.html#how-it-works">How it works</a></li>
               <li data-show="signedIn" hidden><a class="site-nav__link" href="dashboard.html">Dashboard</a></li>
-              <li><a class="site-nav__link" href="resources.html">Resources</a></li>
+              <li data-show="signedIn" hidden><a class="site-nav__link" href="resources.html">Resources</a></li>
               <li data-show="signedIn" hidden><a class="site-nav__link" href="requests.html">Request</a></li>
               <li data-show="signedIn" hidden><a class="site-nav__link" href="matches.html">Matches</a></li>
-              <li data-show="admin" hidden><a class="site-nav__link" href="admin.html">Admin</a></li>
-            </ul>
+              <li data-show="admin" hidden><a class="site-nav__link" href="admin.html">Admin</a></li>        </ul>
           </nav>
 
           <div class="site-actions">
@@ -74,8 +73,8 @@
         <div class="hero__text">
           <h1 id="hero-heading" class="hero__title">Find it before you buy it.</h1>
           <p class="hero__lead">
-            Schools, clubs, and nonprofits often buy supplies that another group already has sitting unused.
-            LoopLocal connects them, so surplus gets reused instead of bought twice.
+            Departments, clubs, and teams often buy supplies that another group in the same organization already has
+            sitting unused. LoopLocal connects them, so surplus gets reused instead of bought twice.
           </p>
           <div class="hero__actions">
             <!-- These two swap depending on whether the visitor is signed in (see layout.js). -->
@@ -119,23 +118,25 @@
     <section class="home-section home-section--muted" id="how-it-works" aria-labelledby="how-heading">
       <div class="container">
         <h2 id="how-heading">How it works</h2>
+        <p class="home-note" style="margin-top:0">Each organization is its own private workspace. Nothing you list or request is visible outside it.</p>
         <ol class="steps">
           <li class="step">
             <span class="step__number" aria-hidden="true">1</span>
-            <h3>List what you don't need</h3>
-            <p>Add surplus supplies with a photo, the quantity, the condition, and when they can be picked up.
-               An administrator reviews each listing before it goes live.</p>
+            <h3>List what your unit doesn't need</h3>
+            <p>Add surplus supplies with a photo, the quantity, the condition, where they are, and when they can be
+               collected. An admin reviews each listing before it goes live.</p>
           </li>
           <li class="step">
             <span class="step__number" aria-hidden="true">2</span>
             <h3>Request what you do</h3>
-            <p>Say what you need, how many, and by when. Mark whether a similar item would work.</p>
+            <p>Say what your unit needs, how many, and by when. Choose pickup or delivery, and mark whether a similar
+               item or a partial amount would work.</p>
           </li>
           <li class="step">
             <span class="step__number" aria-hidden="true">3</span>
             <h3>Review a matched plan</h3>
-            <p>LoopLocal proposes a plan, possibly combining several organizations, and explains each choice.
-               Submit it for approval, then arrange the pickup.</p>
+            <p>LoopLocal proposes a plan, possibly combining several units, and explains each choice. Submit it
+               (admins approve it when your organization requires that), then arrange the hand-off.</p>
           </li>
         </ol>
       </div>
@@ -149,11 +150,12 @@
           <p>The Resource Rescue Engine follows written rules. It is <strong>not artificial intelligence</strong>:
              the same request and the same inventory always produce the same plan.</p>
           <ol class="engine__rules">
-            <li><strong>Filter first.</strong> Only approved items with stock left, from another organization,
-                available by your date, and the right kind of item are considered.</li>
+            <li><strong>Filter first.</strong> Only approved items with stock left, from another unit in your
+                organization, available by your date, the right kind of item, and a hand-off time that works for
+                both sides are considered.</li>
             <li><strong>Rank the rest.</strong> Exact matches come before substitutes, then better condition,
-                then closer pickup.</li>
-            <li><strong>Combine.</strong> If one group can't cover the request, the plan draws from several.</li>
+                then fewer separate hand-offs.</li>
+            <li><strong>Combine.</strong> If one unit can't cover the request, the plan draws from several.</li>
             <li><strong>Explain.</strong> Every line says why that resource was chosen.</li>
           </ol>
           <p>Two requests can never reserve the same stock. The server checks quantities inside a database
@@ -162,7 +164,7 @@
 
         <div class="card engine__example">
           <p class="engine__example-label">Example plan (demo data)</p>
-          <h3>Request: 40 reusable containers</h3>
+          <h3>Student Council requests 40 reusable containers</h3>
           <div class="table-scroll">
             <table class="table">
               <caption class="visually-hidden">Example fulfillment plan for 40 reusable containers</caption>
@@ -185,7 +187,7 @@
         <h2 id="who-heading">Who it's for</h2>
         <div class="grid">
           <article class="card">
-            <h3 class="card__title">School departments</h3>
+            <h3 class="card__title">Departments</h3>
             <p>Science labs, art rooms, and shops often end the year with leftover materials that another
                department could use right away.</p>
           </article>
@@ -194,8 +196,9 @@
             <p>Share equipment between seasons, and stop re-buying items a neighboring club already owns.</p>
           </article>
           <article class="card">
-            <h3 class="card__title">Nonprofits</h3>
-            <p>Community groups can find supplies from nearby schools and offer their own surplus in return.</p>
+            <h3 class="card__title">Organization admins</h3>
+            <p>Set the approval rules, manage units and people, and see how much your organization has reused
+               and saved.</p>
           </article>
         </div>
       </div>
@@ -249,7 +252,7 @@
     <section class="home-cta" aria-labelledby="cta-heading">
       <div class="container">
         <h2 id="cta-heading">Got something sitting unused?</h2>
-        <p>Someone nearby may already be looking for it.</p>
+        <p>Another unit down the hall may already be looking for it.</p>
         <a class="button" href="register.html" data-show="signedOut">Create an account</a>
         <a class="button" href="dashboard.html" data-show="signedIn" hidden>Go to your dashboard</a>
       </div>
@@ -259,7 +262,7 @@
   <!-- FOOTER:START (generated by tools/sync-layout.mjs; edit tools/partials/) -->
     <footer class="site-footer">
       <div class="container">
-        <p><strong>LoopLocal</strong> helps schools, clubs, and nonprofits share what they already have.</p>
+        <p><strong>LoopLocal</strong> helps the departments, clubs, and teams inside an organization share what they already have.</p>
         <p>Savings figures are estimates based on listed replacement values.
            <a href="sources.html">Sources &amp; credits</a></p>
       </div>

@@ -15,6 +15,8 @@ export const config = {
   publicDir: path.join(ROOT_DIR, 'public'),
   sessionSecret: process.env.SESSION_SECRET || 'dev-only-secret',
   maxUploadBytes: 5 * 1024 * 1024, // 5 MB per photo
+  // Limits repeated sign-in and join-code guesses. Set RATE_LIMIT_DISABLED=1 only for automated tests.
+  rateLimitEnabled: process.env.RATE_LIMIT_DISABLED !== '1',
 };
 
 if (isProduction && config.sessionSecret === 'dev-only-secret') {

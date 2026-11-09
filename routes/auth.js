@@ -1,67 +1,86 @@
-// Sign-in, sign-out, registration, and "who am I".
+// Sign-in, sign-out, sign-up (join with a code, or create an organization), and "who am I".
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
-import { db } from '../database/db.js';
-import { FieldErrors, isEmail, isNonEmptyString, isPositiveInt } from '../services/validation.js';
+import { FailureLimiter, rateLimit } from '../middleware/rateLimit.js';
+import { findLoginRow, loadUserById } from '../services/users.js';
+import { registerMember, registerOrganization } from '../services/accounts.js';
+import { findOrganizationByCode, listUnitsForJoining } from '../services/organizations.js';
+import { isEmail } from '../services/validation.js';
 
 const router = Router();
 
-function publicUser(row) {
-  return {
-    id: row.id, name: row.name, email: row.email, role: row.role,
-    organizationId: row.organization_id, organizationName: row.organization_name,
-  };
+// Guessing is slowed to a crawl, but only WRONG guesses count, so a whole class of students
+// sharing one school IP address can all sign in without using up the allowance.
+const WINDOW = 15 * 60 * 1000;
+const passwordGuesses = new FailureLimiter({ windowMs: WINDOW, max: 8 });      // per IP + email
+const passwordGuessesByIp = new FailureLimiter({ windowMs: WINDOW, max: 60 }); // per IP, across emails
+const codeGuesses = new FailureLimiter({ windowMs: WINDOW, max: 15 });         // wrong join codes per IP
+const limitOrganizationCreation = rateLimit({ windowMs: 60 * 60 * 1000, max: 100 });
+
+/** Start a fresh session for this person. (A new session id prevents session fixation.) */
+function startSession(req, res, userId, status = 200) {
+  req.session.regenerate((error) => {
+    if (error) return res.status(500).json({ error: 'Could not sign in.' });
+    req.session.userId = userId;
+    res.status(status).json({ user: loadUserById(userId) });
+  });
 }
 
-const findUserByEmail = () => db.prepare(
-  `SELECT u.*, o.name AS organization_name FROM users u
-   JOIN organizations o ON o.id = u.organization_id WHERE u.email = ?`);
-
 router.get('/me', (req, res) => {
-  res.json({ user: req.session.user || null });
+  res.json({ user: req.user });
 });
 
 router.post('/login', (req, res) => {
   const { email, password } = req.body ?? {};
-  const row = isEmail(email) ? findUserByEmail().get(email) : null;
+  const emailKey = `${req.ip}|${String(email).toLowerCase()}`;
+  if (passwordGuesses.isBlocked(emailKey) || passwordGuessesByIp.isBlocked(req.ip)) return passwordGuesses.reject(res);
+
+  const row = isEmail(email) ? findLoginRow(email) : null;
   // Same message for unknown email and wrong password, so accounts can't be probed.
   if (!row || typeof password !== 'string' || !bcrypt.compareSync(password, row.password_hash)) {
+    passwordGuesses.fail(emailKey);
+    passwordGuessesByIp.fail(req.ip);
     return res.status(401).json({ error: 'Incorrect email or password.' });
   }
-  req.session.regenerate((error) => {
-    if (error) return res.status(500).json({ error: 'Could not sign in.' });
-    req.session.user = publicUser(row);
-    res.json({ user: req.session.user });
-  });
+  passwordGuesses.succeed(emailKey);
+  startSession(req, res, row.id);
 });
 
 router.post('/logout', (req, res) => {
   req.session.destroy(() => res.json({ ok: true }));
 });
 
-// New accounts are always plain members; managers and admins are promoted by an admin.
-router.post('/register', (req, res) => {
-  const { name, email, password, organizationId } = req.body ?? {};
-  const problems = new FieldErrors();
-  if (!isNonEmptyString(name, { max: 100 })) problems.add('name', 'Enter your name.');
-  if (!isEmail(email)) problems.add('email', 'Enter a valid email address.');
-  if (typeof password !== 'string' || password.length < 8) problems.add('password', 'Use at least 8 characters.');
-  if (!isPositiveInt(organizationId) || !db.prepare('SELECT 1 FROM organizations WHERE id = ?').get(organizationId)) {
-    problems.add('organizationId', 'Choose your organization.');
+// Step 1 of joining: check a join code and show the organization's name and units.
+router.get('/join-code', (req, res) => {
+  if (codeGuesses.isBlocked(req.ip)) return codeGuesses.reject(res);
+  const organization = findOrganizationByCode(req.query.code);
+  if (!organization) {
+    codeGuesses.fail(req.ip);
+    return res.status(404).json({ error: 'That code was not recognized. Ask your organization admin for the current code.' });
   }
-  if (!problems.hasAny && findUserByEmail().get(email)) problems.add('email', 'That email is already registered.');
-  if (problems.hasAny) return res.status(400).json({ error: 'Please fix the highlighted fields.', fields: problems.errors });
-
-  const id = Number(db.prepare(
-    'INSERT INTO users (organization_id, name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)')
-    .run(organizationId, name.trim(), email, bcrypt.hashSync(password, 10), 'member').lastInsertRowid);
-  const row = db.prepare(
-    `SELECT u.*, o.name AS organization_name FROM users u
-     JOIN organizations o ON o.id = u.organization_id WHERE u.id = ?`).get(id);
-  req.session.regenerate(() => {
-    req.session.user = publicUser(row);
-    res.status(201).json({ user: req.session.user });
+  res.json({
+    organization: { name: organization.name, type: organization.type },
+    units: listUnitsForJoining(organization.id),
   });
+});
+
+// Step 2 of joining: create the account as an ordinary member of the chosen units.
+// A wrong code here counts as a guess too, so this can't be used to get around the limit above.
+router.post('/register', (req, res) => {
+  if (codeGuesses.isBlocked(req.ip)) return codeGuesses.reject(res);
+  let userId;
+  try {
+    userId = registerMember(req.body);
+  } catch (error) {
+    if (error.fields?.joinCode) codeGuesses.fail(req.ip);
+    throw error;
+  }
+  startSession(req, res, userId, 201);
+});
+
+// Start a brand-new organization; the creator becomes its first admin.
+router.post('/register-organization', limitOrganizationCreation, (req, res) => {
+  startSession(req, res, registerOrganization(req.body), 201);
 });
 
 export default router;

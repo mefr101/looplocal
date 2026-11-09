@@ -7,6 +7,21 @@ const list = document.getElementById('resource-list');
 const count = document.getElementById('result-count');
 const categorySelect = document.getElementById('category');
 
+/**
+ * Link to the request form, pre-filled from this listing. Signed-out visitors are sent
+ * to sign in first and then returned here with the same pre-fill.
+ */
+function requestLink(resource) {
+  const params = new URLSearchParams({ category: resource.category_id });
+  if (resource.primary_tag) {
+    params.set('tag', resource.primary_tag);
+    params.set('item', resource.primary_tag.replace(/-/g, ' ')); // "reusable-container" -> "reusable container"
+  } else {
+    params.set('item', resource.name);
+  }
+  return escapeHtml(`requests.html?${params}`);
+}
+
 function renderCard(resource) {
   const photo = resource.image
     ? `<img class="resource-card__photo" src="/uploads/${encodeURIComponent(resource.image)}" alt="${escapeHtml(resource.name)}">`
@@ -17,13 +32,15 @@ function renderCard(resource) {
       ${photo}
       <div class="resource-card__body">
         <h2 class="card__title">${escapeHtml(resource.name)}</h2>
-        <p class="card__meta">${escapeHtml(resource.organization_name)} &middot; ${escapeHtml(resource.location)}</p>
+        <p class="card__meta">${escapeHtml(resource.unit_name)} &middot; ${escapeHtml(resource.location_name)}</p>
         <ul class="resource-card__facts">
           <li><span class="badge badge--info">${escapeHtml(resource.category_name)}</span></li>
           <li><span class="badge">${resource.quantity_available} available</span></li>
           <li><span class="badge badge--success">Condition: ${escapeHtml(resource.condition)}</span></li>
         </ul>
         <p class="resource-card__value">${formatMoney(resource.replacement_value_cents)} each (estimated)</p>
+        <a class="button button--secondary resource-card__request" href="${requestLink(resource)}"
+           aria-label="Request ${escapeHtml(resource.name)}">Request this</a>
       </div>
     </article>`;
 }

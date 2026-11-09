@@ -12,12 +12,12 @@ if (params.has('signedOut')) {
 
 /**
  * Where to go after signing in: the page they were trying to open (?next=matches.html),
- * or the dashboard. Only plain file names are accepted, so a crafted link can't
- * bounce someone to another website.
+ * or the dashboard. Only a plain page name (optionally with a simple query string) is
+ * accepted: no slashes and no "http:", so a crafted link can't bounce someone to another website.
  */
 function destinationAfterLogin() {
   const next = params.get('next');
-  return next && /^[a-z0-9-]+\.html$/i.test(next) ? next : 'dashboard.html';
+  return next && /^[a-z0-9-]+\.html(\?[A-Za-z0-9=&%+_.-]*)?$/i.test(next) ? next : 'dashboard.html';
 }
 
 form.addEventListener('submit', async (event) => {

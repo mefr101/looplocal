@@ -46,14 +46,12 @@ function enforcePageAccess(user) {
 
   if (!user) {
     const file = window.location.pathname.split('/').pop() || 'index.html';
-    window.location.replace(`login.html?next=${encodeURIComponent(file)}`);
+    // Keep the query string too, so a pre-filled form survives the trip through sign-in.
+    window.location.replace(`login.html?next=${encodeURIComponent(file + window.location.search)}`);
     return;
   }
-  const allowed = {
-    signedIn: true,
-    publisher: user.role === 'org_manager' || user.role === 'admin',
-    admin: user.role === 'admin',
-  };
+  // user.isAdmin and user.canPublish are worked out by the server (services/users.js).
+  const allowed = { signedIn: true, publisher: user.canPublish, admin: user.isAdmin };
   if (!allowed[needs]) window.location.replace('dashboard.html');
 }
 
@@ -62,8 +60,8 @@ function revealForUser(user) {
   const allowed = {
     signedOut: !user,
     signedIn: Boolean(user),
-    admin: user?.role === 'admin',
-    publisher: user?.role === 'org_manager' || user?.role === 'admin',
+    admin: Boolean(user?.isAdmin),
+    publisher: Boolean(user?.canPublish),
   };
   for (const element of document.querySelectorAll('[data-show]')) {
     element.hidden = !allowed[element.dataset.show];

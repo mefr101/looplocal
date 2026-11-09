@@ -1,9 +1,12 @@
 // Resource Exchange API: browse, search, filter, sort, and view details.
+// Everything is limited to the signed-in person's own organization.
 // TODO: POST / (publish a resource with photo upload + validation).
 import { Router } from 'express';
 import { db } from '../database/db.js';
+import { requireLogin } from '../middleware/auth.js';
 
 const router = Router();
+router.use(requireLogin);
 
 // Whitelist of sort options. Never put user input straight into ORDER BY.
 const SORT_OPTIONS = {
@@ -14,19 +17,23 @@ const SORT_OPTIONS = {
 };
 
 const SELECT_LISTING = `
-  SELECT r.id, r.name, r.description, r.condition, r.location,
+  SELECT r.id, r.name, r.description, r.condition, r.location_note,
          r.quantity_total - r.quantity_reserved AS quantity_available,
          r.replacement_value_cents, r.available_from, r.available_until,
-         c.id AS category_id, c.name AS category_name, o.name AS organization_name,
-         (SELECT filename FROM resource_images WHERE resource_id = r.id ORDER BY sort_order LIMIT 1) AS image
+         r.pickup_days, r.pickup_time_start, r.pickup_time_end,
+         c.id AS category_id, c.name AS category_name,
+         u.id AS unit_id, u.name AS unit_name, l.name AS location_name,
+         (SELECT filename FROM resource_images WHERE resource_id = r.id ORDER BY sort_order LIMIT 1) AS image,
+         (SELECT tag FROM resource_tags WHERE resource_id = r.id AND kind = 'identity' ORDER BY tag LIMIT 1) AS primary_tag
   FROM resources r
   JOIN categories c ON c.id = r.category_id
-  JOIN organizations o ON o.id = r.organization_id`;
+  JOIN units u ON u.id = r.unit_id
+  JOIN locations l ON l.id = r.location_id`;
 
 router.get('/', (req, res) => {
   const { q = '', category = '', sort = 'newest' } = req.query;
-  const where = ["r.status = 'approved'", '(r.quantity_total - r.quantity_reserved) > 0'];
-  const params = [];
+  const where = ['r.organization_id = ?', "r.status = 'approved'", '(r.quantity_total - r.quantity_reserved) > 0'];
+  const params = [req.user.organizationId];
 
   if (typeof q === 'string' && q.trim()) {
     where.push('r.name LIKE ?');
@@ -44,7 +51,8 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
   if (!/^\d+$/.test(req.params.id)) return res.status(404).json({ error: 'Resource not found.' });
-  const row = db.prepare(`${SELECT_LISTING} WHERE r.id = ? AND r.status = 'approved'`).get(Number(req.params.id));
+  const row = db.prepare(`${SELECT_LISTING} WHERE r.id = ? AND r.organization_id = ? AND r.status = 'approved'`)
+    .get(Number(req.params.id), req.user.organizationId);
   if (!row) return res.status(404).json({ error: 'Resource not found.' });
   const images = db.prepare('SELECT filename, alt_text FROM resource_images WHERE resource_id = ? ORDER BY sort_order').all(row.id);
   const tags = db.prepare('SELECT tag, kind FROM resource_tags WHERE resource_id = ?').all(row.id);
