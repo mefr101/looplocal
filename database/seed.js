@@ -83,6 +83,7 @@ function buildOrganization(spec, passwordHash)
     }
   }
   return (
+
     {
       orgId,
       cat,
@@ -399,7 +400,7 @@ function seedMapleRidge(hash)
   // The demo scenario: Student Council asks for 40 containers to be delivered for a food drive.
   addRequest(ctx, 'Student Council', 'council', 'admin',
   {
-    item: 'Reusable containers',
+    item: 'Reusable containers',  
     category: 'Containers & Storage',
     tag: 'reusable-container',
     qty: 40,
