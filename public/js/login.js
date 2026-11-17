@@ -1,12 +1,16 @@
 // Sign-in form.
-import { api } from './api.js';
+import
+{
+  api
+} from './api.js';
 
 const form = document.getElementById('login-form');
 const errorBox = document.getElementById('login-error');
 const params = new URLSearchParams(window.location.search);
 
 // Sign-out sends people here with ?signedOut=1 so we can confirm it worked.
-if (params.has('signedOut')) {
+if (params.has('signedOut'))
+{
   document.getElementById('signed-out-note').hidden = false;
 }
 
@@ -15,20 +19,29 @@ if (params.has('signedOut')) {
  * or the dashboard. Only a plain page name (optionally with a simple query string) is
  * accepted: no slashes and no "http:", so a crafted link can't bounce someone to another website.
  */
-function destinationAfterLogin() {
+function destinationAfterLogin()
+{
   const next = params.get('next');
   return next && /^[a-z0-9-]+\.html(\?[A-Za-z0-9=&%+_.-]*)?$/i.test(next) ? next : 'dashboard.html';
 }
 
-form.addEventListener('submit', async (event) => {
+form.addEventListener('submit', async (event) =>
+{
   event.preventDefault();
   errorBox.hidden = true;
   const data = Object.fromEntries(new FormData(form));
 
-  try {
-    await api('/auth/login', { method: 'POST', body: data });
+  try
+  {
+    await api('/auth/login',
+    {
+      method: 'POST',
+      body: data
+    });
     window.location.href = destinationAfterLogin();
-  } catch (error) {
+  }
+  catch (error)
+  {
     errorBox.textContent = error.message;
     errorBox.hidden = false;
   }

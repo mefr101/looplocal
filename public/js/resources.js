@@ -1,6 +1,13 @@
 // Resource Exchange page: search, filter, sort, and render listings.
-import { api, formatMoney } from './api.js';
-import { escapeHtml } from './layout.js';
+import
+{
+  api,
+  formatMoney
+} from './api.js';
+import
+{
+  escapeHtml
+} from './layout.js';
 
 const form = document.getElementById('filters');
 const list = document.getElementById('resource-list');
@@ -11,21 +18,29 @@ const categorySelect = document.getElementById('category');
  * Link to the request form, pre-filled from this listing. Signed-out visitors are sent
  * to sign in first and then returned here with the same pre-fill.
  */
-function requestLink(resource) {
-  const params = new URLSearchParams({ category: resource.category_id });
-  if (resource.primary_tag) {
+function requestLink(resource)
+{
+  const params = new URLSearchParams(
+  {
+    category: resource.category_id
+  });
+  if (resource.primary_tag)
+  {
     params.set('tag', resource.primary_tag);
     params.set('item', resource.primary_tag.replace(/-/g, ' ')); // "reusable-container" -> "reusable container"
-  } else {
+  }
+  else
+  {
     params.set('item', resource.name);
   }
   return escapeHtml(`requests.html?${params}`);
 }
 
-function renderCard(resource) {
-  const photo = resource.image
-    ? `<img class="resource-card__photo" src="/uploads/${encodeURIComponent(resource.image)}" alt="${escapeHtml(resource.name)}">`
-    : '<div class="resource-card__photo resource-card__photo--empty" role="img" aria-label="No photo provided">No photo yet</div>';
+function renderCard(resource)
+{
+  const photo = resource.image ?
+    `<img class="resource-card__photo" src="/uploads/${encodeURIComponent(resource.image)}" alt="${escapeHtml(resource.name)}">` :
+    '<div class="resource-card__photo resource-card__photo--empty" role="img" aria-label="No photo provided">No photo yet</div>';
 
   return `
     <article class="card resource-card">
@@ -45,33 +60,50 @@ function renderCard(resource) {
     </article>`;
 }
 
-async function loadResources() {
+async function loadResources()
+{
   const params = new URLSearchParams(new FormData(form));
-  try {
-    const { resources } = await api(`/resources?${params}`);
+  try
+  {
+    const
+    {
+      resources
+    } = await api(`/resources?${params}`);
     count.textContent = `${resources.length} ${resources.length === 1 ? 'resource' : 'resources'} found`;
-    list.innerHTML = resources.length
-      ? resources.map(renderCard).join('')
-      : '<p class="placeholder-note">No resources match those filters.</p>';
-  } catch (error) {
+    list.innerHTML = resources.length ?
+      resources.map(renderCard).join('') :
+      '<p class="placeholder-note">No resources match those filters.</p>';
+  }
+  catch (error)
+  {
     list.innerHTML = `<p class="alert alert--error" role="alert">${escapeHtml(error.message)}</p>`;
   }
 }
 
-async function loadCategories() {
-  const { categories } = await api('/meta/categories');
-  for (const category of categories) {
+async function loadCategories()
+{
+  const
+  {
+    categories
+  } = await api('/meta/categories');
+  for (const category of categories)
+  {
     categorySelect.add(new Option(category.name, category.id));
   }
 }
 
 // Re-run the search whenever a filter changes (with a short delay while typing).
 let typingTimer;
-form.addEventListener('input', () => {
+form.addEventListener('input', () =>
+{
   clearTimeout(typingTimer);
   typingTimer = setTimeout(loadResources, 250);
 });
-form.addEventListener('submit', (event) => { event.preventDefault(); loadResources(); });
+form.addEventListener('submit', (event) =>
+{
+  event.preventDefault();
+  loadResources();
+});
 
 await loadCategories();
 loadResources();

@@ -5,32 +5,45 @@
 //   2. reveals links/buttons that depend on who is signed in,
 //   3. swaps the Sign in / Sign up buttons for the Account menu,
 //   4. wires up the theme toggle and the phone menu button.
-import { api } from './api.js';
+import
+{
+  api
+} from './api.js';
+import
+{
+  applyBrandColor
+} from './color.js';
 
 const THEME_KEY = 'looplocal-theme';
 
 // Escape user-supplied text before putting it into HTML.
-export function escapeHtml(text) {
+export function escapeHtml(text)
+{
   const div = document.createElement('div');
   div.textContent = String(text ?? '');
   return div.innerHTML;
 }
 
-export async function getCurrentUser() {
-  try {
+export async function getCurrentUser()
+{
+  try
+  {
     return (await api('/auth/me')).user;
-  } catch {
+  }
+  catch
+  {
     return null; // server unreachable or signed out: show the signed-out header
   }
 }
 
-// --- Page-dependent bits ----------------------------------------------------
-
-function markCurrentPage() {
+// Page-dependent bits
+function markCurrentPage()
+{
   const file = window.location.pathname.split('/').pop() || 'index.html';
   const current = file.includes('.') ? file : `${file}.html`; // server also serves /resources
   // The logo is the only link to the home page, so nothing to highlight there.
-  for (const link of document.querySelectorAll('.site-nav__link')) {
+  for (const link of document.querySelectorAll('.site-nav__link'))
+  {
     if (link.getAttribute('href') === current) link.setAttribute('aria-current', 'page');
   }
 }
@@ -40,35 +53,79 @@ function markCurrentPage() {
  * Visitors who do not qualify are sent away. (This only guides people; the real
  * protection is on the server, where every private API route checks the session.)
  */
-function enforcePageAccess(user) {
+function enforcePageAccess(user)
+{
   const needs = document.body.dataset.requires;
   if (!needs) return;
 
-  if (!user) {
+  if (!user)
+  {
     const file = window.location.pathname.split('/').pop() || 'index.html';
     // Keep the query string too, so a pre-filled form survives the trip through sign-in.
     window.location.replace(`login.html?next=${encodeURIComponent(file + window.location.search)}`);
     return;
   }
   // user.isAdmin and user.canPublish are worked out by the server (services/users.js).
-  const allowed = { signedIn: true, publisher: user.canPublish, admin: user.isAdmin };
+  const allowed =
+  {
+    signedIn: true,
+    publisher: user.canPublish,
+    admin: user.isAdmin
+  };
   if (!allowed[needs]) window.location.replace('dashboard.html');
 }
 
 /** Show elements marked data-show="signedOut" | "signedIn" | "admin" | "publisher" when they apply. */
-function revealForUser(user) {
-  const allowed = {
+function revealForUser(user)
+{
+  const allowed =
+  {
     signedOut: !user,
     signedIn: Boolean(user),
     admin: Boolean(user?.isAdmin),
     publisher: Boolean(user?.canPublish),
   };
-  for (const element of document.querySelectorAll('[data-show]')) {
+  for (const element of document.querySelectorAll('[data-show]'))
+  {
     element.hidden = !allowed[element.dataset.show];
   }
 }
 
-function showAccountMenu(user) {
+/**
+ * Apply an organization's branding: accent color on buttons and highlights, and its name
+ * (and logo, if it has one) next to the LoopLocal logo. Safe to call again after a change.
+ */
+export function applyBranding(
+{
+  name,
+  color,
+  logoFilename
+})
+{
+  applyBrandColor(color);
+  document.querySelector('.site-org')?.remove();
+  if (!name) return;
+
+  const badge = document.createElement('span');
+  badge.className = 'site-org';
+  if (logoFilename)
+  {
+    const image = document.createElement('img');
+    image.className = 'site-org__logo';
+    image.src = `/uploads/${encodeURIComponent(logoFilename)}`;
+    image.alt = ''; // decorative: the organization's name is written beside it
+    badge.append(image);
+  }
+  const label = document.createElement('span');
+  label.className = 'site-org__name';
+  label.textContent = name;
+  badge.title = name; // the full name on hover, in case it is very long
+  badge.append(label);
+  document.querySelector('.site-logo')?.after(badge);
+}
+
+function showAccountMenu(user)
+{
   if (!user) return;
   document.getElementById('auth-area').innerHTML = `
     <div class="account-menu">
@@ -88,26 +145,36 @@ function showAccountMenu(user) {
 
   const toggle = document.getElementById('account-toggle');
   const panel = document.getElementById('account-panel');
-  const setOpen = (open) => {
+  const setOpen = (open) =>
+  {
     panel.hidden = !open;
     toggle.setAttribute('aria-expanded', String(open));
   };
 
   toggle.addEventListener('click', () => setOpen(panel.hidden));
-  document.addEventListener('click', (event) => {
+  document.addEventListener('click', (event) =>
+  {
     if (!panel.hidden && !event.target.closest('.account-menu')) setOpen(false);
   });
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !panel.hidden) { setOpen(false); toggle.focus(); }
+  document.addEventListener('keydown', (event) =>
+  {
+    if (event.key === 'Escape' && !panel.hidden)
+    {
+      setOpen(false);
+      toggle.focus();
+    }
   });
-  document.getElementById('sign-out').addEventListener('click', async () => {
-    await api('/auth/logout', { method: 'POST' });
+  document.getElementById('sign-out').addEventListener('click', async () =>
+  {
+    await api('/auth/logout',
+    {
+      method: 'POST'
+    });
     window.location.href = 'login.html?signedOut=1';
   });
 }
 
-// --- Behavior that works without a server -----------------------------------
-
+// Behavior that works without a server
 const SUN = `<svg width="20" height="20" viewBox="0 0 20 20" focusable="false"><circle cx="10" cy="10" r="4" fill="currentColor"/>
   <path d="M10 1v3M10 16v3M1 10h3M16 10h3M3.6 3.6l2.1 2.1M14.3 14.3l2.1 2.1M3.6 16.4l2.1-2.1M14.3 5.7l2.1-2.1"
   stroke="currentColor" stroke-width="1.6"/></svg>`;
@@ -115,37 +182,49 @@ const MOON = `<svg width="20" height="20" viewBox="0 0 20 20" focusable="false">
   <path d="M16 11.5A7 7 0 0 1 8.5 4a7 7 0 1 0 7.5 7.5z" fill="currentColor"/></svg>`;
 
 /** Which theme is showing right now: the saved choice, or else the device setting. */
-function activeTheme() {
+function activeTheme()
+{
   const forced = document.documentElement.getAttribute('data-theme');
   if (forced === 'light' || forced === 'dark') return forced;
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-function setupThemeToggle() {
+function setupThemeToggle()
+{
   const button = document.getElementById('theme-toggle');
   const icon = document.getElementById('theme-icon');
   const label = document.getElementById('theme-label');
 
-  function refresh() {
+  function refresh()
+  {
     const dark = activeTheme() === 'dark';
     button.setAttribute('aria-pressed', String(dark));
     icon.innerHTML = dark ? SUN : MOON; // show the mode you would switch TO
     label.textContent = dark ? 'Switch to light mode' : 'Switch to dark mode';
   }
 
-  button.addEventListener('click', () => {
+  button.addEventListener('click', () =>
+  {
     const next = activeTheme() === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    try { localStorage.setItem(THEME_KEY, next); } catch { /* storage blocked: lasts this visit only */ }
+    try
+    {
+      localStorage.setItem(THEME_KEY, next);
+    }
+    catch
+    {
+      /* storage blocked: lasts this visit only */ }
     refresh();
   });
   refresh();
 }
 
-function setupMobileMenu() {
+function setupMobileMenu()
+{
   const toggle = document.getElementById('nav-toggle');
   const menu = document.getElementById('site-menu');
-  toggle.addEventListener('click', () => {
+  toggle.addEventListener('click', () =>
+  {
     const open = menu.classList.toggle('is-open');
     toggle.setAttribute('aria-expanded', String(open));
   });
@@ -160,3 +239,9 @@ const user = await getCurrentUser();
 enforcePageAccess(user);
 revealForUser(user);
 showAccountMenu(user);
+if (user) applyBranding(
+{
+  name: user.organizationName,
+  color: user.brandColor,
+  logoFilename: user.logoFilename
+});

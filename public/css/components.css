@@ -1,23 +1,9 @@
-/* ==========================================================================
-   COMPONENTS
-   --------------------------------------------------------------------------
-   Reusable building blocks. Class names follow the pattern
-   .block, .block__part, .block--variant  (e.g. .stat-card__value).
+/* Shared pieces used on several pages: buttons, forms, cards, tables, badges, dialogs. */
 
-   CONTENTS
-     1. Buttons
-     2. Cards
-     3. Stat cards (dashboard numbers)
-     4. Forms (fields, grids, fieldsets, checkboxes, error summary, type-ahead)
-     5. Badges
-     6. Alerts and messages
-     7. Grids
-     8. Tables
-   ========================================================================== */
-
-/* 1. BUTTONS --------------------------------------------------------------- */
+/* Buttons */
 /* Bright fill with dark text: readable (about 6:1) in both themes. */
-.button {
+.button
+{
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -34,35 +20,80 @@
   cursor: pointer;
   transition: transform 0.15s ease, background 0.15s ease;
 }
-.button:hover {
+
+.button:hover
+{
   background: var(--color-brand-hover);
   border-color: var(--color-brand-hover);
   color: var(--color-on-brand);
   transform: translateY(-1px);
 }
 
-.button--secondary {
+.button--secondary
+{
   background: transparent;
   border-color: var(--color-text);
   color: var(--color-text);
 }
-.button--secondary:hover { background: var(--color-brand-tint); border-color: var(--color-text); color: var(--color-text); }
+
+.button--secondary:hover
+{
+  background: var(--color-brand-tint);
+  border-color: var(--color-text);
+  color: var(--color-text);
+}
 
 /* Green: confirm/approve actions. */
-.button--success { background: var(--color-secondary); border-color: var(--color-secondary); }
-.button--success:hover { background: #3bc474; border-color: #3bc474; }
+.button--success
+{
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.button--success:hover
+{
+  background: #3bc474;
+  border-color: #3bc474;
+}
 
 /* Orange: attention actions such as "Add a Resource". */
-.button--accent { background: var(--color-accent); border-color: var(--color-accent); }
-.button--accent:hover { background: #f59a42; border-color: #f59a42; }
+.button--accent
+{
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
 
-.button--danger { background: var(--color-danger); border-color: var(--color-danger); color: var(--color-page); }
-.button--danger:hover { background: var(--color-danger); border-color: var(--color-danger); color: var(--color-page); }
+.button--accent:hover
+{
+  background: #f59a42;
+  border-color: #f59a42;
+}
 
-.button[disabled] { opacity: 0.55; cursor: not-allowed; transform: none; }
+.button--danger
+{
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: var(--color-on-danger);
+}
 
-/* 2. CARDS ----------------------------------------------------------------- */
-.card {
+.button--danger:hover
+{
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: var(--color-on-danger);
+  filter: brightness(0.92);
+}
+
+.button[disabled]
+{
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Cards */
+.card
+{
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -70,45 +101,92 @@
   padding: var(--space-5);
 }
 
-.card__title { margin-bottom: var(--space-2); }
-.card__meta  { color: var(--color-text-muted); font-size: var(--text-sm); margin: 0; }
+.card__title
+{
+  margin-bottom: var(--space-2);
+}
 
-/* 3. STAT CARDS ------------------------------------------------------------ */
+.card__meta
+{
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  margin: 0;
+}
+
+/* Stat cards */
 /* The numbers use the mono font so digits line up. */
-.stat-card {
+.stat-card
+{
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-top: 4px solid var(--palette-blue);
   border-radius: var(--radius-md);
   padding: var(--space-4) var(--space-5);
 }
-/* Each card gets a different top color from the palette. */
-.stat-card:nth-child(3n + 2) { border-top-color: var(--palette-green); }
-.stat-card:nth-child(3n)     { border-top-color: var(--palette-orange); }
 
-.stat-card__value {
+/* Each card gets a different top color from the palette. */
+.stat-card:nth-child(3n + 2)
+{
+  border-top-color: var(--palette-green);
+}
+
+.stat-card:nth-child(3n)
+{
+  border-top-color: var(--palette-orange);
+}
+
+.stat-card__value
+{
   font-family: var(--font-mono);
   font-size: var(--text-2xl);
   font-weight: 500;
   color: var(--color-text);
   margin: 0;
 }
-.stat-card__label { margin: 0; color: var(--color-text-muted); }
-.stat-card__note  { margin: var(--space-1) 0 0; font-size: var(--text-sm); color: var(--color-text-muted); }
 
-/* 4. FORMS ----------------------------------------------------------------- */
-.form-field { margin-bottom: var(--space-4); }
+.stat-card__label
+{
+  margin: 0;
+  color: var(--color-text-muted);
+}
 
-.form-field__label {
+.stat-card__note
+{
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* Forms */
+.form-field
+{
+  margin-bottom: var(--space-4);
+}
+
+.form-field__label
+{
   display: block;
   margin-bottom: var(--space-1);
   font-weight: 700;
 }
 
-.form-field__hint  { display: block; font-size: var(--text-sm); color: var(--color-text-muted); }
-.form-field__error { display: block; font-size: var(--text-sm); color: var(--color-danger); font-weight: 700; }
+.form-field__hint
+{
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
 
-.form-input {
+.form-field__error
+{
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+  font-weight: 700;
+}
+
+.form-input
+{
   width: 100%;
   min-height: var(--touch-target);
   padding: var(--space-2) var(--space-3);
@@ -118,34 +196,92 @@
   color: var(--color-text);
   font: inherit;
 }
-.form-input[aria-invalid="true"] { border-color: var(--color-danger); }
+
+.form-input[aria-invalid="true"]
+{
+  border-color: var(--color-danger);
+}
 
 /* Two-column form layout; fields marked .form-field--wide span both columns. */
-.form-grid { display: grid; gap: 0 var(--space-5); grid-template-columns: 1fr 1fr; }
-.form-field--wide { grid-column: 1 / -1; }
-@media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+.form-grid
+{
+  display: grid;
+  gap: 0 var(--space-5);
+  grid-template-columns: 1fr 1fr;
+}
+
+.form-field--wide
+{
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 640px)
+{
+  .form-grid
+  {
+    grid-template-columns: 1fr;
+  }
+}
 
 /* A text box with a button beside it (e.g. a code and its "Check" button). */
-.inline-field { display: flex; gap: var(--space-2); }
-.inline-field .form-input { flex: 1; }
-.inline-field .button { flex-shrink: 0; }
+.inline-field
+{
+  display: flex;
+  gap: var(--space-2);
+}
+
+.inline-field .form-input
+{
+  flex: 1;
+}
+
+.inline-field .button
+{
+  flex-shrink: 0;
+}
 
 /* Multi-line text boxes. */
-textarea.form-input { min-height: 96px; resize: vertical; line-height: var(--line-height-body); }
-.form-field__counter { float: right; font-family: var(--font-mono); font-size: var(--text-sm); color: var(--color-text-muted); }
+textarea.form-input
+{
+  min-height: 96px;
+  resize: vertical;
+  line-height: var(--line-height-body);
+}
+
+.form-field__counter
+{
+  float: right;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
 
 /* A bordered group of related fields (e.g. "Pickup constraints"). */
-.form-fieldset {
+.form-fieldset
+{
   margin: 0 0 var(--space-4);
   padding: var(--space-4) var(--space-4) 0;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
 }
-.form-fieldset > legend { padding: 0 var(--space-2); font-weight: 700; }
+
+.form-fieldset > legend
+{
+  padding: 0 var(--space-2);
+  font-weight: 700;
+}
 
 /* Row of checkboxes that look like toggle chips (e.g. days of the week). */
-.check-group { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-2); }
-.check {
+.check-group
+{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.check
+{
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -156,24 +292,73 @@ textarea.form-input { min-height: 96px; resize: vertical; line-height: var(--lin
   background: var(--color-surface);
   cursor: pointer;
 }
-.check input { width: 18px; height: 18px; accent-color: var(--palette-blue); }
-.check:has(input:checked) { background: var(--color-brand-tint); border-color: var(--color-text); }
-.check:has(input:focus-visible) { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+
+.check input
+{
+  width: 18px;
+  height: 18px;
+  accent-color: var(--palette-blue);
+}
+
+.check:has(input:checked)
+{
+  background: var(--color-brand-tint);
+  border-color: var(--color-text);
+}
+
+.check:has(input:focus-visible)
+{
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
 
 /* A single yes/no option with a longer explanation underneath. */
-.check-block { display: flex; align-items: flex-start; gap: var(--space-3); }
-.check-block input { width: 22px; height: 22px; margin-top: 3px; accent-color: var(--palette-blue); flex-shrink: 0; }
+.check-block
+{
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.check-block input
+{
+  width: 22px;
+  height: 22px;
+  margin-top: 3px;
+  accent-color: var(--palette-blue);
+  flex-shrink: 0;
+}
 
 /* Row of buttons at the bottom of a form. */
-.form-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-4); }
+.form-actions
+{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
 
 /* Summary shown above a form when validation fails; links jump to each problem field. */
-.error-summary ul { margin: var(--space-2) 0 0; padding-left: var(--space-5); }
-.error-summary a { color: inherit; font-weight: 700; }
+.error-summary ul
+{
+  margin: var(--space-2) 0 0;
+  padding-left: var(--space-5);
+}
+
+.error-summary a
+{
+  color: inherit;
+  font-weight: 700;
+}
 
 /* Type-ahead: a text box with a list of suggestions underneath. */
-.combobox { position: relative; }
-.combobox__list {
+.combobox
+{
+  position: relative;
+}
+
+.combobox__list
+{
   position: absolute;
   left: 0;
   right: 0;
@@ -189,7 +374,9 @@ textarea.form-input { min-height: 96px; resize: vertical; line-height: var(--lin
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-raised);
 }
-.combobox__option {
+
+.combobox__option
+{
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -197,12 +384,21 @@ textarea.form-input { min-height: 96px; resize: vertical; line-height: var(--lin
   padding: var(--space-2) var(--space-4);
   cursor: pointer;
 }
-.combobox__option[aria-selected="true"],
-.combobox__option:hover { background: var(--color-brand-tint); }
-.combobox__meta { color: var(--color-text-muted); font-size: var(--text-sm); }
 
-/* 5. BADGES ---------------------------------------------------------------- */
-.badge {
+.combobox__option[aria-selected="true"], .combobox__option:hover
+{
+  background: var(--color-brand-tint);
+}
+
+.combobox__meta
+{
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+/* Badges */
+.badge
+{
   display: inline-block;
   padding: 2px var(--space-3);
   border-radius: var(--radius-sm);
@@ -211,13 +407,34 @@ textarea.form-input { min-height: 96px; resize: vertical; line-height: var(--lin
   background: var(--color-surface-muted);
   color: var(--color-text);
 }
-.badge--success { background: var(--color-success-light); color: var(--color-success); }
-.badge--warning { background: var(--color-warning-light); color: var(--color-warning); }
-.badge--danger  { background: var(--color-danger-light);  color: var(--color-danger); }
-.badge--info    { background: var(--color-info-light);    color: var(--color-info); }
 
-/* 6. ALERTS AND MESSAGES --------------------------------------------------- */
-.alert {
+.badge--success
+{
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.badge--warning
+{
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+.badge--danger
+{
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.badge--info
+{
+  background: var(--color-info-light);
+  color: var(--color-info);
+}
+
+/* Alerts and messages */
+.alert
+{
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-sm);
   border-left: 6px solid var(--color-info);
@@ -225,11 +442,24 @@ textarea.form-input { min-height: 96px; resize: vertical; line-height: var(--lin
   color: var(--color-info);
   margin-bottom: var(--space-4);
 }
-.alert--error   { border-color: var(--color-danger);  background: var(--color-danger-light);  color: var(--color-danger); }
-.alert--success { border-color: var(--color-success); background: var(--color-success-light); color: var(--color-success); }
 
-/* Shown on pages that are not built yet. */
-.placeholder-note {
+.alert--error
+{
+  border-color: var(--color-danger);
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.alert--success
+{
+  border-color: var(--color-success);
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+/* A friendly note shown where a list is empty. */
+.placeholder-note
+{
   border: 2px dashed var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--space-6);
@@ -237,29 +467,182 @@ textarea.form-input { min-height: 96px; resize: vertical; line-height: var(--lin
   color: var(--color-text-muted);
 }
 
-/* 7. GRIDS ----------------------------------------------------------------- */
+/* Grids */
 /* Cards flow into as many columns as fit; each is at least 240px wide. */
-.grid {
+.grid
+{
   display: grid;
   gap: var(--space-5);
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
-.grid--stats { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+.grid--stats
+{
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
 
 /* A list with no bullets. */
-.plain-list { list-style: none; margin: 0; padding: 0; }
-.plain-list li { margin-bottom: var(--space-1); }
+.plain-list
+{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.plain-list li
+{
+  margin-bottom: var(--space-1);
+}
 
 /* Label/value pairs, e.g. on the Account page. */
-.detail-list { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-2) var(--space-5); margin: 0 0 var(--space-5); }
-.detail-list dt { color: var(--color-text-muted); }
-.detail-list dd { margin: 0; font-weight: 500; }
+.detail-list
+{
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-2) var(--space-5);
+  margin: 0 0 var(--space-5);
+}
 
-/* 8. TABLES ---------------------------------------------------------------- */
+.detail-list dt
+{
+  color: var(--color-text-muted);
+}
+
+.detail-list dd
+{
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Tables */
 /* Wrap wide tables in .table-scroll so phones can scroll sideways. */
-.table-scroll { overflow-x: auto; }
+.table-scroll
+{
+  overflow-x: auto;
+}
 
-.table { width: 100%; border-collapse: collapse; background: var(--color-surface); }
-.table th,
-.table td { padding: var(--space-3); text-align: left; border-bottom: 1px solid var(--color-border); }
-.table th { background: var(--color-surface-muted); }
+.table
+{
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+}
+
+.table th, .table td
+{
+  padding: var(--space-3);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table th
+{
+  background: var(--color-surface-muted);
+}
+
+/* SPACING UTILITIES (replace inline styles) */
+.mt-0
+{
+  margin-top: 0;
+}
+
+.mt-7
+{
+  margin-top: var(--space-7);
+}
+
+.mb-4
+{
+  margin-bottom: var(--space-4);
+}
+
+.pb-3
+{
+  padding-bottom: var(--space-3);
+}
+
+.container--form
+{
+  max-width: 640px;
+}
+
+.container--login
+{
+  max-width: 440px;
+}
+
+/* DIALOGS (see js/dialog.js) */
+.dialog
+{
+  width: min(32rem, calc(100vw - 2 * var(--space-4)));
+  max-height: calc(100vh - 2 * var(--space-4));
+  overflow-y: auto;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.dialog::backdrop
+{
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.dialog__title
+{
+  margin: 0 0 var(--space-3);
+  font-size: 1.25rem;
+}
+
+.dialog__message
+{
+  margin: 0 0 var(--space-4);
+}
+
+.dialog__actions
+{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+/* Windows high contrast / forced colors */
+/* The system replaces our colors. Keep shapes visible: borders on things that rely on a background. */
+@media (forced-colors: active)
+{
+  .badge, .stat-card, .card, .alert, .dialog
+  {
+    border: 1px solid CanvasText;
+  }
+
+  .button
+  {
+    border: 2px solid ButtonText;
+  }
+
+  .button--danger, .button--success
+  {
+    forced-color-adjust: none;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  :focus-visible
+  {
+    outline: 3px solid Highlight;
+  }
+
+  .check:has(input:focus-visible)
+  {
+    outline-color: Highlight;
+  }
+
+  .analytics-chart canvas
+  {
+    forced-color-adjust: none;
+    background: Canvas;
+  }
+}

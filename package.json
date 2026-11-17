@@ -13,7 +13,11 @@
     "seed": "node database/seed.js",
     "reset": "node database/seed.js --reset",
     "test": "node --test",
-    "sync-layout": "node tools/sync-layout.mjs"
+    "sync-layout": "node tools/sync-layout.mjs",
+    "check:a11y": "node tools/check-a11y.mjs",
+    "check:css": "node tools/check-css.mjs",
+    "check:contrast": "node tools/check-contrast.mjs",
+    "check": "node tools/check-a11y.mjs && node tools/check-css.mjs && node tools/check-contrast.mjs && node --test"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -1,0 +1,228 @@
+/* Settings page. Styles used only on settings.html; shared pieces live in components.css. */
+
+/* Tabs */
+.tabs
+{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.tabs__tab
+{
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  font: inherit;
+  font-weight: 700;
+  color: var(--color-text);
+  background: transparent;
+  border: 2px solid transparent;
+  border-bottom: 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  cursor: pointer;
+}
+
+.tabs__tab:hover
+{
+  background: var(--color-brand-tint);
+}
+
+.tabs__tab[aria-selected="true"]
+{
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  margin-bottom: -2px;
+  box-shadow: inset 0 3px 0 var(--color-brand);
+}
+
+.tabs__tab:focus-visible
+{
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Branding and live color preview */
+.branding-layout
+{
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+}
+
+@media (max-width: 800px)
+{
+  .branding-layout
+  {
+    grid-template-columns: 1fr;
+  }
+}
+
+.color-row
+{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.color-input
+{
+  width: 64px;
+  height: 44px;
+  padding: 2px;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.color-input:focus-visible
+{
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.preview
+{
+  padding: var(--space-4);
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.preview__header
+{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.preview__org
+{
+  font-family: var(--font-heading);
+  overflow-wrap: anywhere;
+}
+
+.preview__button
+{
+  padding: var(--space-2) var(--space-4);
+  font-weight: 700;
+  border-radius: var(--radius-md);
+}
+
+.preview__checks
+{
+  margin: var(--space-4) 0 var(--space-2);
+}
+
+.preview__checks li
+{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+/* Logo */
+.settings-subhead
+{
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.logo-row
+{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  align-items: flex-start;
+}
+
+.logo-frame
+{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
+  height: 100px;
+  padding: var(--space-2);
+  background: var(--color-surface-muted);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.logo-frame img
+{
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Editable lists */
+.list-table input
+{
+  min-height: 38px;
+}
+
+.list-table .row-actions
+{
+  white-space: nowrap;
+  text-align: right;
+}
+
+.list-table .row-actions .button
+{
+  min-height: 38px;
+  padding: 0 var(--space-4);
+}
+
+/* Pickup hours */
+.hours-unit
+{
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.hours-unit:last-child
+{
+  border-bottom: 0;
+}
+
+.hours-unit__grid
+{
+  display: grid;
+  gap: 0 var(--space-5);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-items: end;
+}
+
+/* Approval rules */
+.radio-list
+{
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.check-block input[type="radio"]
+{
+  accent-color: var(--palette-blue);
+}
+
+.form-input--short
+{
+  max-width: 180px;
+}

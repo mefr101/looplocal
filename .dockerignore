@@ -1,0 +1,11 @@
+node_modules
+.git
+.env
+data
+uploads
+test
+tools
+backups
+*.log
+*.pdf
+prompt 1.md

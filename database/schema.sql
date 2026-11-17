@@ -41,6 +41,9 @@ CREATE TABLE IF NOT EXISTS organizations (
   --                       'threshold' = only plans worth at least the amount below,
   --                       'never' = plans are approved automatically.
   review_requests               INTEGER NOT NULL DEFAULT 0 CHECK (review_requests IN (0, 1)),
+  --   review_listings = 1: an admin must approve each new listing before it appears in Browse
+  --                        (admins' own listings skip review).
+  review_listings               INTEGER NOT NULL DEFAULT 1 CHECK (review_listings IN (0, 1)),
   plan_approval_mode            TEXT NOT NULL DEFAULT 'always' CHECK (plan_approval_mode IN ('always', 'threshold', 'never')),
   plan_approval_threshold_cents INTEGER NOT NULL DEFAULT 20000 CHECK (plan_approval_threshold_cents >= 0),
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -123,6 +126,10 @@ CREATE TABLE IF NOT EXISTS resources (
   -- Listings start as pending_review and become approved when an admin accepts them.
   status                  TEXT NOT NULL DEFAULT 'pending_review'
                           CHECK (status IN ('pending_review', 'approved', 'rejected', 'archived')),
+  -- Set when an admin approves or rejects the listing; a rejection always has a note.
+  reviewed_by             INTEGER REFERENCES users(id),
+  review_note             TEXT,
+  reviewed_at             TEXT,
   created_at              TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CHECK (quantity_reserved >= 0 AND quantity_reserved <= quantity_total),
   CHECK (available_until >= available_from)
@@ -221,7 +228,9 @@ CREATE TABLE IF NOT EXISTS reservation_items (
   match_type     TEXT NOT NULL CHECK (match_type IN ('exact', 'substitute')),
   -- Human-readable explanation produced by the matching engine.
   reason         TEXT NOT NULL,
-  pickup_note    TEXT NOT NULL DEFAULT ''
+  pickup_note    TEXT NOT NULL DEFAULT '',
+  -- First day (YYYY-MM-DD) the hand-off can happen, worked out by the engine. Becomes the transfer's scheduled date.
+  handoff_date   TEXT
 );
 
 CREATE INDEX IF NOT EXISTS idx_reservation_items_resource ON reservation_items (resource_id);

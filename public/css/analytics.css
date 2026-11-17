@@ -1,0 +1,40 @@
+/* Analytics page. Colors and spacing come from tokens.css. */
+.analytics-range
+{
+  max-width: 22rem;
+  margin-bottom: var(--space-5);
+}
+
+.analytics-updated
+{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.analytics-card
+{
+  margin-top: var(--space-6);
+}
+
+.analytics-figure
+{
+  margin: 0;
+}
+
+/* Chart.js needs a sized wrapper to fill; the canvas is drawn at this height. */
+.analytics-chart
+{
+  position: relative;
+  height: 320px;
+  width: 100%;
+}
+
+@media (max-width: 40rem)
+{
+  .analytics-chart
+  {
+    height: 260px;
+  }
+}

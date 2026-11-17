@@ -1,0 +1,6 @@
+# Caddy gets and renews the HTTPS certificate by itself. DOMAIN comes from .env.
+# (Caddyfiles need the opening brace on the same line as the address.)
+{$DOMAIN} {
+  encode gzip
+  reverse_proxy app:3000
+}
