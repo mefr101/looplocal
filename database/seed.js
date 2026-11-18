@@ -642,16 +642,20 @@ function seedRiverside(hash)
   addResource(ctx, 'Youth Outreach', 'admin',
   {
     name: 'Folding Chairs',
+    image: 'folding-chairs.jpg',
+    imageAlt: 'Rows of folded wooden-slat chairs with black metal frames',
     category: 'Furniture',
     qty: 40,
     condition: 'fair',
     valueCents: 1500,
     identity: ['folding-chair'],
-    description: 'Metal folding chairs from a closed event space.'
+    description: 'Wood-slat folding chairs with metal frames, from a closed event space.'
   });
   addResource(ctx, 'Food Distribution', 'food',
   {
     name: 'Insulated Food Carriers',
+    image: 'food-carrier.jpg',
+    imageAlt: 'Black insulated food jar with its orange inner cup and lid set beside it',
     category: 'Containers & Storage',
     qty: 10,
     condition: 'good',
