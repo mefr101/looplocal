@@ -13,7 +13,11 @@
 //     Its own category list. Requests from members wait for admin review; every plan needs approval.
 //
 // Every account uses the demo password below. Change it before any public deploy.
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import bcrypt from 'bcryptjs';
+import { saveImage } from '../services/uploads.js';
 import
 {
   db,
@@ -22,6 +26,7 @@ import
   resetSchema
 } from './db.js';
 
+const IMAGE_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), 'seed-images');
 const DEMO_PASSWORD = 'looplocal123';
 const reset = process.argv.includes('--reset');
 
@@ -127,6 +132,13 @@ function addResource(ctx, unitName, userKey, r)
   const insertTag = db.prepare('INSERT INTO resource_tags (resource_id, tag, kind) VALUES (?, ?, ?)');
   for (const tag of r.identity ?? []) insertTag.run(id, tag, 'identity');
   for (const tag of r.substitute ?? []) insertTag.run(id, tag, 'substitute');
+  if (r.image)
+  {
+    // Copy the bundled photo into the upload folder under a fresh name, like a real upload.
+    const filename = saveImage('resource', fs.readFileSync(path.join(IMAGE_DIR, r.image)), 'jpg');
+    db.prepare('INSERT INTO resource_images (resource_id, filename, alt_text, sort_order) VALUES (?, ?, ?, 0)')
+      .run(id, filename, r.imageAlt);
+  }
   return id;
 }
 
@@ -291,6 +303,8 @@ function seedMapleRidge(hash)
   rid.scienceContainers = addResource(ctx, 'Science Department', 'science',
   {
     name: 'Reusable Lab Storage Containers (lidded)',
+    image: 'lab-bench.jpg',
+    imageAlt: 'Laboratory bench with microscopes, incubators and shelves of lab supplies',
     category: 'Containers & Storage',
     qty: 20,
     condition: 'good',
@@ -302,6 +316,8 @@ function seedMapleRidge(hash)
   rid.beakers = addResource(ctx, 'Science Department', 'science',
   {
     name: 'Glass Beakers (250 mL)',
+    image: 'beaker.jpg',
+    imageAlt: 'A 250 mL glass beaker filled with orange liquid',
     category: 'Lab & Science',
     qty: 30,
     condition: 'good',
@@ -312,6 +328,8 @@ function seedMapleRidge(hash)
   addResource(ctx, 'Environmental Club', 'green',
   {
     name: 'Reusable Food-Safe Containers',
+    image: 'food-containers-clear.jpg',
+    imageAlt: 'Clear lidded food containers holding pasta, grapes and cookies',
     category: 'Containers & Storage',
     qty: 12,
     condition: 'good',
@@ -333,6 +351,8 @@ function seedMapleRidge(hash)
   addResource(ctx, 'Art Department', 'art',
   {
     name: 'Plastic Storage Tubs',
+    image: 'storage-tubs.jpg',
+    imageAlt: 'Stack of four colorful plastic storage tubs with lids',
     category: 'Containers & Storage',
     qty: 15,
     condition: 'fair',
@@ -344,6 +364,8 @@ function seedMapleRidge(hash)
   addResource(ctx, 'Art Department', 'art',
   {
     name: 'Tabletop Easels',
+    image: 'easels.jpg',
+    imageAlt: 'Two wooden tabletop easels, one natural and one black',
     category: 'Art Supplies',
     qty: 10,
     condition: 'good',
@@ -354,6 +376,8 @@ function seedMapleRidge(hash)
   addResource(ctx, 'Robotics Team', 'admin',
   {
     name: 'Refurbished Laptops',
+    image: 'laptop.jpg',
+    imageAlt: 'Open silver laptop with a dark screen',
     category: 'Electronics',
     qty: 6,
     condition: 'fair',
@@ -364,6 +388,8 @@ function seedMapleRidge(hash)
   rid.sheetPans = addResource(ctx, 'Culinary Arts', 'culinary',
   {
     name: 'Sheet Pans (half size)',
+    image: 'sheet-pan.jpg',
+    imageAlt: 'Aluminum half-size sheet pan',
     category: 'Kitchen & Food Service',
     qty: 24,
     condition: 'good',
@@ -377,6 +403,8 @@ function seedMapleRidge(hash)
   addResource(ctx, 'Student Council', 'council',
   {
     name: 'Spare Meal-Prep Containers',
+    image: 'meal-prep-glass.jpg',
+    imageAlt: 'Glass meal-prep containers filled with chicken, broccoli and rice',
     category: 'Containers & Storage',
     qty: 10,
     condition: 'good',
@@ -387,6 +415,8 @@ function seedMapleRidge(hash)
   addResource(ctx, 'Culinary Arts', 'culinary',
   {
     name: 'Takeout Containers (last term)',
+    image: 'takeout-box.jpg',
+    imageAlt: 'White hinged takeout box',
     category: 'Containers & Storage',
     qty: 6,
     condition: 'worn',
